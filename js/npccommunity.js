@@ -1,8 +1,25 @@
 var npcCommunityApp = angular.module('npccommunity', ['ngRoute','ngAnimate']);
 
-npcCommunityApp.controller('mainController',['$sce', function($scope,$sce) {
-    avvv=$sce;
-    $scope.message = '!'+Math.random();
+npcCommunityApp.controller('main-controller',['$scope', function($scope,$sce) {
+    $scope.index_count = 0; //The global index for the current wizard step
+    
+    /* Toggle all the elements to off besides the first item */
+    $(".container > article:not(:first-child)").toggle();
+    $scope.next = function(){
+        $scope.index_count = Math.min($scope.index_count + 1,$(".container > article").size());
+        var next_element = $(".container > article")[$scope.index_count];
+        $(next_element).fadeIn(1000,function(){
+            $('body,html').animate({scrollTop: $(next_element).offset().top}, 500);
+        }); 
+    }
+    var count = 0
+    /*$(".container > article").each(function(){
+        var _this = this;
+        setTimeout(function(){
+            //$(_this).fadeIn(1000);
+        },count*1000);
+        count++;
+    });*/
 }]);
 
 npcCommunityApp.config(function($routeProvider) {

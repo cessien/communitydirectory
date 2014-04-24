@@ -1,7 +1,75 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
 
+* {
+    font-family: "Open Sans Condensed";
+}
+
+.input-block-level {
+  display: block; width: 100%; min-height: 28px; box-sizing(border-box);
+}
+
+.section {
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #ddd;
+}
+
+.section-label {
+    margin-top: 30px;
+}
+
 .panel-title {
     font-size: 22px;
     text-transform: uppercase;
     font-family: "Open Sans COndensed";
+}
+
+.form-group  h1 {
+    font-size: 55px;
+    font-family: "open sans condensed"
+}
+
+.npc-question {
+    display: inline-block;
+    width: 100%;
+}
+
+.npc-question {
+    width: 100%;
+    text-align: left;
+    display: inline-block;
+}
+
+.npc-question > h1 {
+    font-size: 55px;
+    font-family: "Open sans condensed";
+    width: 70%;
+    display: inline-block;
+}
+
+.npc-question > input[type="radio"] {
+    width: 20%;
+    display: inline-block;
+    -webkit-appearance: checkbox;
+    -moz-appearance: checkbox;
+    -ms-appearance: checkbox;    
+    -o-appearance: checkbox;     
+}
+
+.navigation {
+    border-top: 3px solid #eee;
+    margin-top: 50px;
+}
+
+.navigation > * {
+    display: inline-block;
+    font-size: 55px;
+}
+
+.navigation .next {
+    float: right;
+}
+
+.navigation .previous {
+    float: left;
 }
