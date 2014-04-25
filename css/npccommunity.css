@@ -4,10 +4,6 @@
     font-family: "Open Sans Condensed";
 }
 
-.input-block-level {
-  display: block; width: 100%; min-height: 28px; box-sizing(border-box);
-}
-
 .section {
     margin-bottom: 30px;
     padding-bottom: 30px;
@@ -18,10 +14,10 @@
     margin-top: 30px;
 }
 
-.panel-title {
-    font-size: 22px;
-    text-transform: uppercase;
-    font-family: "Open Sans COndensed";
+.section > h2 {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 5px;
 }
 
 .form-group  h1 {
@@ -47,14 +43,6 @@
     display: inline-block;
 }
 
-.npc-question > input[type="radio"] {
-    width: 20%;
-    display: inline-block;
-    -webkit-appearance: checkbox;
-    -moz-appearance: checkbox;
-    -ms-appearance: checkbox;    
-    -o-appearance: checkbox;     
-}
 
 .navigation {
     border-top: 3px solid #eee;
@@ -62,7 +50,7 @@
 }
 
 .navigation > * {
-    display: inline-block;
+    /*display: inline-block; */
     font-size: 55px;
 }
 
@@ -72,4 +60,29 @@
 
 .navigation .previous {
     float: left;
+}
+
+.saved {
+}
+
+.saved > h2 {
+    transition: .5s;
+    /*background-color: #96c34c;*/
+    border: 3px dashed #96c34c;
+    padding: 15px 8px;
+    color: #96c34c;
+}
+
+.section > h2 > .glyphicon-ok {
+    transition: all 1s;
+    display: none;
+}
+
+.section > h2 > .glyphicon-ok > p {
+    margin-left: 10px;
+}
+
+.saved > h2 > .glyphicon-ok {
+    transition: .5s;
+    display: inline-block;
 }
