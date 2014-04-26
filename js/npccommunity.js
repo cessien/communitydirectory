@@ -43,16 +43,16 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
         if (type=="person"){
             switch(index - 1) {
                     case 0:
-                        config.first_name = $scope.first_name;
-                        config.middle_name = $scope.middle_name;
-                        config.last_name = $scope.last_name;
+                        config.first_name = $scope.person.first_name;
+                        config.middle_name = $scope.person.middle_name;
+                        config.last_name = $scope.person.last_name;
                     break;
                     case 1:
-                        config.picture = $scope.picture;
+                        config.profile_picture = $scope.person.profile_picture;
                     break;
                     case 2:
-                        config.birthday = $scope.birthday;
-                        config.sex = $scope.sex;
+                        config.birthday = $scope.person.birthday;
+                        config.sex = $scope.person.sex;
                     break;
             }
         }
@@ -61,9 +61,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
         $http({
             method: 'POST',
             url: window.path + 'save.php?action=' + $scope.actions.person[index - 1],
-            data: {
-                
-            },
+            data: $.param(config),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function(data){
             var elem = $($(".container > article")[$scope.index_count - 1]);
@@ -79,20 +77,20 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
         
         if ($scope.currentStep = "person") {
             //Submit all the fields for a person
-            config.first_name = $scope.first_name;
-            config.middle_name = $scope.middle_name;
-            config.last_ame = $scope.last_name;
-            config.birthday = $scope.birthday;
-            config.sex = $scope.sex;
-            config.profile_picture = $scope.profile_picture;
-            config.address_line1 = $scope.address_line1;
-            config.address_line2 = $scope.address_line2;
-            config.address_city = $scope.city;
-            config.state = $scope.state;
-            config.zip = $scope.zip;
-            config.primary_email = $scope.primary_email;
-            config.primary_phone = $scope.primary_phone;
-            config.member = $scope.member;
+            config.first_name = $scope.person.first_name;
+            config.middle_name = $scope.person.middle_name;
+            config.last_name = $scope.person.last_name;
+            config.birthday = $scope.person.birthday;
+            config.sex = $scope.person.sex;
+            config.profile_picture = $scope.person.profile_picture;
+            config.address_line1 = $scope.person.address_line1;
+            config.address_line2 = $scope.person.address_line2;
+            config.address_city = $scope.person.city;
+            config.state = $scope.person.state;
+            config.zip = $scope.person.zip;
+            config.primary_email = $scope.person.primary_email;
+            config.primary_phone = $scope.person.primary_phone;
+            config.member = $scope.person.member;
     
         } else if ($scope.currentStep = "family") {
         } else if ($sope.currentStep = "communities") {
@@ -100,7 +98,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
         
         $http({
             method: 'POST',
-            url: window.path + 'save.php?action=all&type=all',
+            url: window.path + 'save.php?action=all&type=person',
             data: config,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function(data){
