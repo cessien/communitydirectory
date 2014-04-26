@@ -29,19 +29,19 @@ $user_info = get_currentuserinfo();
                         <div class="col-sm-2 col-sm-offset-3">
                             <div class="input-group input-group-lg">
                                 <h3>First name</h3>
-                                <input class="form-control input-block-level" type="text" name="first_name" placeholder="First name">
+                                <input class="form-control input-block-level" type="text" name="first_name" ng-model="person.first_name" placeholder="First name">
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="input-group input-group-lg">
                                 <h3>Middle name</h3>
-                                <input class="form-control" type="text" name="first_name" placeholder="Middle name">
+                                <input class="form-control" type="text" name="first_name" ng-model="person.middle_name" placeholder="Middle name">
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="input-group input-group-lg">
                                 <h3>Last name</h3>
-                                <input class="form-control" type="text" name="first_name" placeholder="Last name" ng-focus="next(2)" ng-blur="next(2,true)">
+                                <input class="form-control" type="text" name="first_name" ng-model="person.last_name" placeholder="Last name" ng-focus="next(2)" ng-blur="next(2,true)">
                             </div>
                         </div>
                     </div>

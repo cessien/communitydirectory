@@ -35,11 +35,34 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
         }); 
     }
     
-    $scope.submit = function(index){
+    $scope.submit = function(index,type){
+        if(!type) type = "person"
+        var config = {};
+        
+        if (type=="person"){
+            switch(index - 1) {
+                    case 0:
+                        config.first_name = $scope.first_name;
+                        config.middle_name = $scope.middle_name;
+                        config.last_name = $scope.last_name;
+                    break;
+                    case 1:
+                        config.picture = $scope.picture;
+                    break;
+                    case 2:
+                        config.birthday = $scope.birthday;
+                        config.sex = $scope.sex;
+                    break;
+            }
+        }
+        
+        
         $http({
             method: 'POST',
             url: window.path + 'save.php?action=' + $scope.actions.person[index - 1],
-            data: '',
+            data: {
+                
+            },
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function(data){
             var elem = $($(".container > article")[$scope.index_count - 1]);
