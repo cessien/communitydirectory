@@ -1,20 +1,20 @@
 <?php
 	global $wpdb;
-	private $TABLE_PERSON = "npcc_person";
-	private $TABLE_FAMILY = "npcc_family";
-	private $TABLE_COMMUNITY = "npcc_community";
-	private $TABLE_COMMUNITY_ROLE = "npcc_community_role";
-	private $TABLE_RELATIONSHIP = "npcc_relationship";
+	$TABLE_PERSON = "npcc_person";
+	$TABLE_FAMILY = "npcc_family";
+	$TABLE_COMMUNITY = "npcc_community";
+	$TABLE_COMMUNITY_ROLE = "npcc_community_role";
+	$TABLE_RELATIONSHIP = "npcc_relationship";
 	
     $action = $_GET['action'];
-	$type = $_GET['type'];
 	
+	echo $action;
 
     if ($action == "name") {
         echo "saved you basic name information";
-		$_SESSION['person']['first_name'] = $_POST['first_name'];
-		$_SESSION['person']['middle_name'] = $_POST['middle_name'];
-		$_SESSION['person']['last_name'] = $_POST['name_name'];
+		$_SESSION['person']['first_name'] = first;#$_POST['first_name'];
+		$_SESSION['person']['middle_name'] = middle;#$_POST['middle_name'];
+		$_SESSION['person']['last_name'] = last;#$_POST['name_name'];
         echo "sucessfully added your changes";
     } else if ($action == "profile-picture"){
 		$_SESSION['person']['picture'] = $_POST['picture'];
@@ -37,6 +37,7 @@
     } 
 	
 	if ($action == "all"){
+		$type = $_GET['type'];
 		if ($type == "person"){
 			$_SESSION['person']['first_name'] = $_POST['first_name'];
 			$_SESSION['person']['middle_name'] = $_POST['middle_name'];
@@ -61,9 +62,16 @@
 	}
 	
 	function submit_person($person){
+		global $wpdb;
+		echo $wpdb;
+		$wpdb->query("INSERT INTO npcc_person(first_name,last_name) VALUES('hello','world')");
 		$wpdb->insert(
-			$TABLE_PERSON,
-			$person
+			'npcc_person',
+			array (
+				'first_name' => 'first',
+				'middle_name' => 'mid',
+				'last_name' => 'last'
+			)
 		);
 	}
 
