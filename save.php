@@ -11,14 +11,11 @@
 	
 
     if ($action == "name") {
-<<<<<<< HEAD
         echo "saved you basic name information";
-=======
 		$_SESSION['person']['first_name'] = $_POST['first_name'];
 		$_SESSION['person']['middle_name'] = $_POST['middle_name'];
 		$_SESSION['person']['last_name'] = $_POST['name_name'];
         echo "sucessfully added your changes";
->>>>>>> d177eba8d72f90aecfe1065368070e0fb07d41dd
     } else if ($action == "profile-picture"){
 		$_SESSION['person']['picture'] = $_POST['picture'];
         echo "successfully uploaded your profile picture";
