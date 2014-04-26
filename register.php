@@ -3,6 +3,7 @@ $dir = plugin_dir_url(__FILE__);//"/wordpress/wp-content/plugins/npcdirectory/";
 global $current_user;
 global $wpdb;
 $user_info = get_currentuserinfo();
+$_SESSION['person'] = array();
 ?>
 <!DOCTYPE html>
 <html lang="en" ng-app="npccommunity">
