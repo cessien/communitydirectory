@@ -99,7 +99,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
         $http({
             method: 'POST',
             url: window.path + 'save.php?action=all&type=person',
-            data: config,
+            data: $.param(config),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function(data){
             alert(data);
