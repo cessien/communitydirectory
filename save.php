@@ -2,7 +2,7 @@
     $action = $_GET['action'];
 
     if ($action == "name") {
-        echo "sucessfully added your changes";
+        echo "saved you basic name information";
     } else if ($action == "profile-picture"){
         echo "successfully uploaded your profile picture";
     }  else if ($action == "age-sex"){

@@ -210,7 +210,7 @@ $user_info = get_currentuserinfo();
                     <h1 class="previous"><a>&lt; Previous</a></h1>
                 </div>
                 <div class="col-sm-6">
-                    <h1 class="next"><a>Continue &gt;</a></h1>
+                    <h1 class="next"><a ng-click="submitAll(true)">Continue &gt;</a></h1>
                 </div>
             </div>
         </section><!-- end container -->

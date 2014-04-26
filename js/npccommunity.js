@@ -1,6 +1,7 @@
 var npcCommunityApp = angular.module('npccommunity', ['ngRoute','ngAnimate']);
 
 npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,$http) {
+    $scope.currentStep = "person";
     $scope.actions = {
         person: ['name','profile-picture','age-sex','location-info','contact-info'],
         family: [],
@@ -16,7 +17,6 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
     $(".section > h2").click(function(){
         $(this.parentNode).children(":not(h2)").toggle("slow");
     });
-    
     
     $scope.next = function(step,scroll){
         $scope.index_count = (step)?step-1:Math.min($scope.index_count + 1,$(".container > article").size());
@@ -37,7 +37,8 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
     
     $scope.submit = function(index,type){
         if(!type) type = "person"
-        var config = {};
+        var config = {
+        };
         
         if (type=="person"){
             switch(index - 1) {
@@ -68,6 +69,42 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
             var elem = $($(".container > article")[$scope.index_count - 1]);
             elem.find(".glyphicon-ok > p").text(data);
             elem.find(".section").addClass("saved");
+        });
+    }
+    
+    /* Submit all forms on the current view */
+    $scope.submitAll = function(proceedToNextStep){
+        var config = {
+        };
+        
+        if ($scope.currentStep = "person") {
+            //Submit all the fields for a person
+            config.first_name = $scope.first_name;
+            config.middle_name = $scope.middle_name;
+            config.last_ame = $scope.last_name;
+            config.birthday = $scope.birthday;
+            config.sex = $scope.sex;
+            config.profile_picture = $scope.profile_picture;
+            config.address_line1 = $scope.address_line1;
+            config.address_line2 = $scope.address_line2;
+            config.address_city = $scope.city;
+            config.state = $scope.state;
+            config.zip = $scope.zip;
+            config.primary_email = $scope.primary_email;
+            config.primary_phone = $scope.primary_phone;
+            config.member = $scope.member;
+    
+        } else if ($scope.currentStep = "family") {
+        } else if ($sope.currentStep = "communities") {
+        }
+        
+        $http({
+            method: 'POST',
+            url: window.path + 'save.php?action=all&type=all',
+            data: config,
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).success(function(data){
+            alert(data);
         });
     }
 }]);
