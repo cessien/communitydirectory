@@ -1,6 +1,8 @@
 var npcCommunityApp = angular.module('npccommunity', ['ngRoute','ngAnimate']);
 
 npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,$http) {
+    $scope.person = {};
+    $scope.person.first_name = "CHUZZY";
     $scope.currentStep = "person";
     $scope.actions = {
         person: ['name','profile-picture','age-sex','location-info','contact-info'],
@@ -9,9 +11,9 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
     };
     
     $scope.index_count = 0; //The global index for the current wizard step
-    
     /* Toggle all the elements to off besides the first item */
-    $(".container > article:not(:first-child)").toggle();
+    $(".container > div#main-view > article:not(:first-child)").toggle();
+    console.log("called");
     
     /* enable collapsing on headers */
     $(".section > h2").click(function(){
@@ -19,15 +21,15 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
     });
     
     $scope.next = function(step,scroll){
-        $scope.index_count = (step)?step-1:Math.min($scope.index_count + 1,$(".container > article").size());
+        $scope.index_count = (step)?step-1:Math.min($scope.index_count + 1,$(".container > div#main-view > article").size());
         
-        var next_element = $(".container > article")[$scope.index_count];
+        var next_element = $(".container > div#main-view > article")[$scope.index_count];
         $(next_element).fadeIn(1000,function(){
             if(scroll) {
                 //$('body,html').animate({scrollTop: $(next_element).offset().top}, 500);
                 
                 //collapse the header for the previous section
-                $($(".container > article")[$scope.index_count - 1]).find(".section").children(":not(h2)").toggle("slow");
+                $($(".container > div#main-view > article")[$scope.index_count - 1]).find(".section").children(":not(h2)").toggle("slow");
                 
                 //Submit the form's data
                 $scope.submit(step-1);
@@ -64,7 +66,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
             data: $.param(config),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function(data){
-            var elem = $($(".container > article")[$scope.index_count - 1]);
+            var elem = $($(".container > div#main-view > article")[$scope.index_count - 1]);
             elem.find(".glyphicon-ok > p").text(data);
             elem.find(".section").addClass("saved");
         });
@@ -98,7 +100,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
         
         $http({
             method: 'POST',
-            url: window.path + 'save.php?action=all&type=person',
+            url: window.path + 'save.php?action=all&type='+$scope.currentStep,
             data: $.param(config),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function(data){
@@ -107,10 +109,11 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
     }
 }]);
 
+
 npcCommunityApp.config(function($routeProvider) {
     $routeProvider.when('/', {
-            templateUrl : window.path+'view.php?step=next',//?step=next
-            controller  : 'mainController'
+            templateUrl : window.path+'view.php?step=next',
+            controller  : 'main-controller'
     })
 });
 
