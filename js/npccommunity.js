@@ -1,8 +1,13 @@
 var npcCommunityApp = angular.module('npccommunity', ['ngRoute','ngAnimate']);
 
-npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,$http) {
+npcCommunityApp.run(function($rootScope, $templateCache) {
+   $rootScope.$on('$viewContentLoaded', function() {
+      $templateCache.removeAll();
+   });
+});
+
+npcCommunityApp.controller('main-controller',['$scope','$http',function($scope,$http) {
     $scope.person = {};
-    $scope.person.first_name = "CHUZZY";
     $scope.currentStep = "person";
     $scope.actions = {
         person: ['name','profile-picture','age-sex','location-info','contact-info'],
@@ -10,10 +15,48 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
         community: []
     };
     
+        /* Submit all forms on the current view */
+    $scope.submitAll = function(proceedToNextStep){
+        var config = {
+        };
+        
+        if ($scope.currentStep = "person") {
+            //Submit all the fields for a person
+            config.first_name = $scope.person.first_name;
+            config.middle_name = $scope.person.middle_name;
+            config.last_name = $scope.person.last_name;
+            config.birthday = $scope.person.birthday;
+            config.sex = $scope.person.sex;
+            config.profile_picture = $scope.person.profile_picture;
+            config.address_line1 = $scope.person.address_line1;
+            config.address_line2 = $scope.person.address_line2;
+            config.address_city = $scope.person.city;
+            config.state = $scope.person.state;
+            config.zip = $scope.person.zip;
+            config.primary_email = $scope.person.primary_email;
+            config.primary_phone = $scope.person.primary_phone;
+            config.member = $scope.person.member;
+    
+        } else if ($scope.currentStep = "family") {
+        } else if ($sope.currentStep = "communities") {
+        }
+        
+        $http({
+            method: 'POST',
+            url: window.path + 'save.php?action=all&type='+$scope.currentStep,
+            data: $.param(config),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).success(function(data){
+            console.log(data);
+        });
+    }
+    
+}]);
+
+npcCommunityApp.controller('view-controller',['$scope','$http', function($scope,$http) {
     $scope.index_count = 0; //The global index for the current wizard step
     /* Toggle all the elements to off besides the first item */
     $(".container > div#main-view > article:not(:first-child)").toggle();
-    console.log("called");
     
     /* enable collapsing on headers */
     $(".section > h2").click(function(){
@@ -71,53 +114,17 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
             elem.find(".section").addClass("saved");
         });
     }
-    
-    /* Submit all forms on the current view */
-    $scope.submitAll = function(proceedToNextStep){
-        var config = {
-        };
-        
-        if ($scope.currentStep = "person") {
-            //Submit all the fields for a person
-            config.first_name = $scope.person.first_name;
-            config.middle_name = $scope.person.middle_name;
-            config.last_name = $scope.person.last_name;
-            config.birthday = $scope.person.birthday;
-            config.sex = $scope.person.sex;
-            config.profile_picture = $scope.person.profile_picture;
-            config.address_line1 = $scope.person.address_line1;
-            config.address_line2 = $scope.person.address_line2;
-            config.address_city = $scope.person.city;
-            config.state = $scope.person.state;
-            config.zip = $scope.person.zip;
-            config.primary_email = $scope.person.primary_email;
-            config.primary_phone = $scope.person.primary_phone;
-            config.member = $scope.person.member;
-    
-        } else if ($scope.currentStep = "family") {
-        } else if ($sope.currentStep = "communities") {
-        }
-        
-        $http({
-            method: 'POST',
-            url: window.path + 'save.php?action=all&type='+$scope.currentStep,
-            data: $.param(config),
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).success(function(data){
-            alert(data);
-        });
-    }
 }]);
 
 
 npcCommunityApp.config(function($routeProvider) {
     $routeProvider.when('/', {
             templateUrl : window.path+'view.php',
-            controller  : 'main-controller'
-    }).when('next', {
+            controller  : 'view-controller'
+    }).when('/next', {
             templateUrl : window.path+'view.php?step=next',
-            controller  : 'main-controller'
-    })
+            controller  : 'view-controller'
+    });
 });
 
 function search($scope, $http, $sce) {

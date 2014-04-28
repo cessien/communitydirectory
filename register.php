@@ -19,7 +19,7 @@ $_SESSION["current_step"] = "person"; //The current step of the wizard. 1 - pers
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.2/css/jasny-bootstrap.min.css">
         <link type="text/css" media="all" rel="stylesheet" href="<?php echo $dir;?>css/npccommunity.css">
     </head>
-    <body>
+    <body ng-controller="main-controller">
         <section class="jumbotron text-center">
             <h1>Signing up: <span style="text-transform: uppercase;"><?php if($current_user->user_login !="") echo $current_user->user_login?></span><br ><small>Let's start with some basic info about yourself.</small></h1>
         </section>
@@ -27,10 +27,10 @@ $_SESSION["current_step"] = "person"; //The current step of the wizard. 1 - pers
             <div id="main-view" ng-view></div>
             <div class="row navigation">
                 <div class="col-sm-6">
-                    <h1 class="previous"><a>&lt; Previous</a></h1>
+                    <h1 class="previous"><a href="#/prev">&lt; Previous</a></h1>
                 </div>
                 <div class="col-sm-6">
-                    <h1 class="next"><a href="#next" ng-click="submitAll(true)">Continue &gt;</a></h1>
+                    <h1 class="next" ><a ng-href="#/next" ng-click="submitAll(true)">Continue &gt;</a></h1>
                 </div>
             </div>
         </section><!-- end container -->
