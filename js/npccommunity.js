@@ -112,6 +112,9 @@ npcCommunityApp.controller('main-controller',['$scope','$http', function($scope,
 
 npcCommunityApp.config(function($routeProvider) {
     $routeProvider.when('/', {
+            templateUrl : window.path+'view.php',
+            controller  : 'main-controller'
+    }).when('next', {
             templateUrl : window.path+'view.php?step=next',
             controller  : 'main-controller'
     })

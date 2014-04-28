@@ -2,6 +2,10 @@
 	include_once($_SERVER['DOCUMENT_ROOT'].'/wordpress/wp-config.php' );
 	global $wpdb;
 	
+    if(!session_id()) {
+        session_start();
+    }
+
 	$TABLE_PERSON = "npcc_person";
 	$TABLE_FAMILY = "npcc_family";
 	$TABLE_COMMUNITY = "npcc_community";

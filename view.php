@@ -1,9 +1,18 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/wordpress/wp-config.php' );
+if(!session_id()) {
+    session_start();
+}
 
-switch ($_SESSION["current_step"]) {
-    case 1:
-?>
+if ($_SESSION["current_step"] == "person") {
+    $_SESSION["current_step"] == "family";
+} else if ($_SESSION["current_step"] == "family") {
+    $_SESSION["current_step"] == "community";
+} else if ($_SESSION["current_step"] == "community") {
+    $_SESSION["current_step"] == "final";
+}
+
+
+if ($_SESSION["current_step"] == "person") { ?>
 <article>
     <form class="form-group" ng-submit="submit(1)">
         <div class="row">
@@ -190,11 +199,6 @@ switch ($_SESSION["current_step"]) {
         </div>
     </form>
 </article>
-<?php>
-    break;
-    case 2: //family view
-?>
+<?php } else if ($_SESSION['current_Step'] == "family") { ?>
 THE WORLD IS OURS
-<?php
-} //end switch statement echo 
-echo 'ello'.$_SESSION["current_step"]?>
+<?php } ?>

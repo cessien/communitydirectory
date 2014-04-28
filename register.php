@@ -1,10 +1,13 @@
 <?php
-include_once($_SERVER['DOCUMENT_ROOT'].'/wordpress/wp-config.php' );
+if(!session_id()) {
+    session_start();
+}
+
 $dir = plugin_dir_url(__FILE__);//"/wordpress/wp-content/plugins/npcdirectory/";
 global $current_user;
-global $wpdb;
 $user_info = get_currentuserinfo();
-$_SESSION["current_step"] = '1'; //The current step of the wizard. 1 - person, 2 - family, 3 - community
+
+$_SESSION["current_step"] = "person"; //The current step of the wizard. 1 - person, 2 - family, 3 - community
 ?>
 <!DOCTYPE html>
 <html lang="en" ng-app="npccommunity">
@@ -27,7 +30,7 @@ $_SESSION["current_step"] = '1'; //The current step of the wizard. 1 - person, 2
                     <h1 class="previous"><a>&lt; Previous</a></h1>
                 </div>
                 <div class="col-sm-6">
-                    <h1 class="next"><a href="#/" ng-click="submitAll(true)">Continue &gt;</a></h1>
+                    <h1 class="next"><a href="#next" ng-click="submitAll(true)">Continue &gt;</a></h1>
                 </div>
             </div>
         </section><!-- end container -->
