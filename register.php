@@ -24,13 +24,13 @@ $_SESSION["current_step"] = "person"; //The current step of the wizard. 1 - pers
             <h1>Signing up: <span style="text-transform: uppercase;"><?php if($current_user->user_login !="") echo $current_user->user_login?></span><br ><small>Let's start with some basic info about yourself.</small></h1>
         </section>
         <section class="container">
-            <div id="main-view" ng-view></div>
+            <div id="main-view" ng-controller="view-controller" ></div>
             <div class="row navigation">
                 <div class="col-sm-6">
-                    <h1 class="previous"><a href="#/prev">&lt; Previous</a></h1>
+                    <h1 class="previous"><a ng-href="#" ng-click="paginate('family')">&lt; Previous</a></h1>
                 </div>
                 <div class="col-sm-6">
-                    <h1 class="next" ><a ng-href="#/next" ng-click="submitAll(true)">Continue &gt;</a></h1>
+                    <h1 class="next" ><a ng-href="#" ng-click="submitAll('next')">Continue &gt;</a></h1>
                 </div>
             </div>
         </section><!-- end container -->

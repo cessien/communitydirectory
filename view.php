@@ -2,15 +2,11 @@
 if(!session_id()) {
     session_start();
 }
-
-if ($_SESSION["current_step"] == "person") {
-    $_SESSION["current_step"] == "family";
-} else if ($_SESSION["current_step"] == "family") {
-    $_SESSION["current_step"] == "community";
-} else if ($_SESSION["current_step"] == "community") {
-    $_SESSION["current_step"] == "final";
+if (isset($_GET["step"])) {
+    $_SESSION["current_step"] = $_GET["step"];
+} else {
+    $_SESSION["current_step"] = "person";
 }
-
 
 if ($_SESSION["current_step"] == "person") { ?>
 <article>
@@ -199,6 +195,52 @@ if ($_SESSION["current_step"] == "person") { ?>
         </div>
     </form>
 </article>
-<?php } else if ($_SESSION['current_Step'] == "family") { ?>
-THE WORLD IS OURS
+<?php } else if ($_SESSION['current_step'] == "family") { ?>
+<article>
+    <form class="form-group" ng-submit="submit(1)">
+        <div class="row">
+            <h1 class="col-sm-12 text-center">Do you have family at NPC?</h1>
+        </div>
+        <div class="row section">
+            <div class="col-md-offset-3 col-md-3">
+                <h1>Yes</h1>
+                <input class="form-control" type="radio" ng-model="family.show" name="show" value="yes">
+            </div>
+            <div class="col-md-3">
+                <h1>No</h1>
+                <input class="form-control" type="radio" ng-model="family.show" name="show" value="no">
+            </div>
+        </div>
+    </form>
+</article>
+<div ng-hide="family.show != 'yes'">
+    <article ng-controller="family-search">
+        <div class="form-group">
+            <div class="row section search">
+                <h2 class="col-sm-12">Search for your family.</h2>
+                <div class="input-group input-group-lg col-sm-12 col-md-8">
+                    <input type="text" class="search-query form-control" ng-model="keywords" ng-keyup="search()" placeholder="Search for families by last name">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <span class=" glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+                <div class="col-sm-12 col-md-8 well">
+                    <ul class="results">
+                        <li class="row family-header" ng-repeat="family in list | filter: filterfn">
+                            <h2 class="col-sm-12">{{family[0].name}}'s Family</h2>
+                            <ul class="col-sm-8">
+                                <li class="member" ng-repeat="person in family">{{person.first_name}},&nbsp;</li>
+                            </ul>
+                            <h2 class="col-sm-4 info">{{family[0].city}},&nbsp;{{family[0].state}}</h2>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </article>
+</div>
+<?php } else if ($_SESSION['current_step'] == "communities") { ?>
+<?php } else if ($_SESSION['current_step'] == "end") { ?>
 <?php } ?>

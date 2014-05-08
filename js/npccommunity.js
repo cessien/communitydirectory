@@ -1,12 +1,12 @@
-var npcCommunityApp = angular.module('npccommunity', ['ngRoute','ngAnimate']);
+var npcCommunityApp = angular.module('npccommunity', ['ngAnimate']);
 
-npcCommunityApp.run(function($rootScope, $templateCache) {
+npcCommunityApp.run(function($rootScope) {
    $rootScope.$on('$viewContentLoaded', function() {
       $templateCache.removeAll();
    });
 });
 
-npcCommunityApp.controller('main-controller',['$scope','$http',function($scope,$http) {
+npcCommunityApp.controller('main-controller',['$scope','$http','$compile', function($scope,$http,$compile) {
     $scope.person = {};
     $scope.currentStep = "person";
     $scope.actions = {
@@ -15,8 +15,18 @@ npcCommunityApp.controller('main-controller',['$scope','$http',function($scope,$
         community: []
     };
     
+    /* load the first page */
+    $http({
+        method: 'Get',
+        url: window.path + 'view.php'
+    }).success(function(data){
+        $('#main-view').html(data);
+        $compile($('#main-view').contents());
+        $scope.$broadcast('init',{compiler:$compile($('#main-view').contents())});
+    });
+    
         /* Submit all forms on the current view */
-    $scope.submitAll = function(proceedToNextStep){
+    $scope.submitAll = function(step){
         var config = {
         };
         
@@ -36,7 +46,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http',function($scope,$
             config.primary_email = $scope.person.primary_email;
             config.primary_phone = $scope.person.primary_phone;
             config.member = $scope.person.member;
-    
+        
         } else if ($scope.currentStep = "family") {
         } else if ($sope.currentStep = "communities") {
         }
@@ -48,19 +58,62 @@ npcCommunityApp.controller('main-controller',['$scope','$http',function($scope,$
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function(data){
             console.log(data);
+            
+            /* transition to the next page */
+            $scope.paginate(step);
         });
     }
     
+    /* take the current page and transition to the next or previous page */
+    $scope.paginate = function(step) {
+        if(step && step == "next"){
+            /* automatically set up the next step */
+            if ($scope.currentStep == "person") {
+                $scope.currentStep = "family";
+            } else if ($scope.currentStep == "family") {
+                $scope.currentStep = "communities";
+            } else if ($scope.currentStep == "communities") {
+                $scope.currentStep = "end";
+            } else if ($scope.currentStep == "end") {
+                $scope.currentStep = "end"
+            }
+        } else if (step && step == "prev") {
+            /* automatically set up the previous step */
+            if ($scope.currentStep == "person") {
+                $scope.currentStep = "person";
+            } else if ($scope.currentStep == "family") {
+                $scope.currentStep = "person";
+            } else if ($scope.currentStep = "communities") {
+                $scope.currentStep = "family";
+            } else if ($scope,currentStep == "end") {
+                $scope.currentStep = "communities";
+            }
+        } else {
+            $scope.currentStep = step;
+        }
+        
+        /* call the next page */
+        $http({
+            method: 'Get',
+            url: window.path + 'view.php?step='+$scope.currentStep
+        }).success(function(data){
+            $('#main-view').html(data);
+            $scope.$broadcast('init',{compiler:$compile($('#main-view').contents())});
+        });
+    }    
 }]);
 
-npcCommunityApp.controller('view-controller',['$scope','$http', function($scope,$http) {
-    $scope.index_count = 0; //The global index for the current wizard step
-    /* Toggle all the elements to off besides the first item */
-    $(".container > div#main-view > article:not(:first-child)").toggle();
-    
-    /* enable collapsing on headers */
-    $(".section > h2").click(function(){
-        $(this.parentNode).children(":not(h2)").toggle("slow");
+npcCommunityApp.controller('view-controller',['$scope','$http','$compile', function($scope,$http,$comple) {
+    $scope.$on('init',function(info,args){
+        args.compiler($scope);
+        $scope.index_count = 0; //The global index for the current wizard step
+        /* Toggle all the elements to off besides the first item */
+        //$(".container > div#main-view > article:not(:first-child)").toggle();
+
+        /* enable collapsing on headers */
+        $(".section > h2").click(function(){
+            $(this.parentNode).children(":not(h2)").toggle("slow");
+        });
     });
     
     $scope.next = function(step,scroll){
@@ -116,16 +169,58 @@ npcCommunityApp.controller('view-controller',['$scope','$http', function($scope,
     }
 }]);
 
-
-npcCommunityApp.config(function($routeProvider) {
-    $routeProvider.when('/', {
-            templateUrl : window.path+'view.php',
-            controller  : 'view-controller'
-    }).when('/next', {
-            templateUrl : window.path+'view.php?step=next',
-            controller  : 'view-controller'
+npcCommunityApp.controller('family-search',['$scope','$http','$compile', function($scope,$http,$compile) {
+    $scope.list = [];
+    $scope.fuzzy = [];
+    
+    $scope.filterfn = function(item){
+        var bFuzzy = false;
+        for (var i in $scope.fuzzy) {
+            if(parseInt(item[0].uid)==parseInt($scope.fuzzy[i].uid)){
+                bFuzzy = true;
+                break;
+            }
+        }
+        if(!$scope.keywords || $scope.keywords == "" || (item[0].name).indexOf($scope.keywords) > -1 || bFuzzy) {
+            return true;
+        } 
+        
+        return false;
+    }
+    
+    $http({
+        method: 'GET',
+        url: window.path + 'search.php?action=init',
+        header: {
+            'Content-type': "application/json"
+        }
+    }).success(function(data){
+        var a = 0;
+        
+        for (var i in data) {
+            if(data[i].uid != data[Math.max(i-1,0)].uid) 
+                a++;
+            
+            if(!$scope.list[a]) 
+                $scope.list[a] = [];
+            
+            $scope.list[a].push(data[i])
+        }
+        //$scope.list = data;
     });
-});
+    $scope.search = function(){
+        $http({
+            method: 'POST',
+            url: window.path + 'search.php?action=family',
+            data: {'keywords': $scope.keywords},
+            header: {
+                'Content-type': "application/json"
+            }
+        }).success(function(data){
+            $scope.fuzzy = data;
+        });
+    }
+}]);
 
 function search($scope, $http, $sce) {
     $scope.url = 'query.php'; // The url of our search
