@@ -188,7 +188,7 @@ npcCommunityApp.controller('family-search',['$scope','$http','$compile', functio
             
             $http({
                 method: 'POST',
-                url: window.path + 'search.php?action=family&fam='+uid
+                url: window.path + 'search.php?action=family&fam='+uid,
                 header: {
                     'Content-type': "application/json"
                 }

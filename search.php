@@ -19,7 +19,7 @@ if ( $_GET["action"] == "init" ) { //Get all families to return to the client vi
     
     echo json_encode($results);
     
-} else if ( $_GET["action"] == "family" && !isset($_GET["name"])){ //Search by last name for family records
+} else if ( $_GET["action"] == "family" && !isset($_GET["fam"])){ //Search by last name for family records
     //Query the family table for familes
     $query = "SELECT uid FROM npcc_family WHERE SOUNDEX(name) = SOUNDEX('".$keyword."') OR name LIKE '%".$keyword."%' LIMIT 0, 30";
     
