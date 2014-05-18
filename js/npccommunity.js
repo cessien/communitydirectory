@@ -7,7 +7,9 @@ npcCommunityApp.run(function($rootScope) {
 });
 
 npcCommunityApp.controller('main-controller',['$scope','$http','$compile', function($scope,$http,$compile) {
-    $scope.person = {};
+    $scope.person = {}; 
+    $scope.fam = {};
+    $scope.communities = [];
     $scope.currentStep = "person";
     $scope.actions = {
         person: ['name','profile-picture','age-sex','location-info','contact-info'],
@@ -172,8 +174,48 @@ npcCommunityApp.controller('view-controller',['$scope','$http','$compile', funct
 npcCommunityApp.controller('family-search',['$scope','$http','$compile', function($scope,$http,$compile) {
     $scope.list = [];
     $scope.fuzzy = [];
+    //$scope.family = {};
+    //$scope.family.active = false; // Flag to show the search results or not. Save space.
+    
+    $scope.setFamily = function(uid) {
+        $scope.family.active = true;
+        
+        //If a uid is passed then default information to the family record
+        if(uid) {
+            $scope.fam.action = "update";
+            $scope.fam.uid = uid;
+            $scope.fam.name = $scope.list[uid][0].name;
+            
+            $http({
+                method: 'POST',
+                url: window.path + 'search.php?action=family&fam='+uid
+                header: {
+                    'Content-type': "application/json"
+                }
+            }).success(function(data){
+                console.log("success!");
+                $scope.family_record = data[0];
+                $scope.fam.address_line1 = $scope.family_record.address_line1;
+                $scope.fam.address_line2 = $scope.family_record.address_line2;
+                $scope.fam.city = $scope.family_record.city;
+                $scope.fam.state = "ma";//($scope.family_record.address_line1 != "")?$scope.family_record.address_line1:$scope.person.address_line1;
+                $scope.fam.zipcode = $scope.family_record.zipcode;
+            });
+            
+            
+        } else {
+            $scope.fam.address_line1 = $scope.person.address_line1;
+            $scope.fam.address_line2 = $scope.person.address_line2;
+            $scope.fam.city = $scope.person.city;
+            $scope.fam.state = "ma";
+            $scope.fam.zipcode = $scope.person.zipcode;
+        }
+    }
     
     $scope.filterfn = function(item){
+        if(!item){ //skip undefined item indexes
+            return false;
+        }
         var bFuzzy = false;
         for (var i in $scope.fuzzy) {
             if(parseInt(item[0].uid)==parseInt($scope.fuzzy[i].uid)){
@@ -195,20 +237,20 @@ npcCommunityApp.controller('family-search',['$scope','$http','$compile', functio
             'Content-type': "application/json"
         }
     }).success(function(data){
+        //Separate all family records by family UID - O(n) complexity
         var a = 0;
-        
         for (var i in data) {
-            if(data[i].uid != data[Math.max(i-1,0)].uid) 
-                a++;
-            
-            if(!$scope.list[a]) 
-                $scope.list[a] = [];
-            
-            $scope.list[a].push(data[i])
+            if(!$scope.list[""+data[i].uid])
+                $scope.list[""+data[i].uid] = [];
+            $scope.list[""+data[i].uid].push(data[i]);
         }
-        //$scope.list = data;
     });
+        
     $scope.search = function(){
+        if($scope.family.active == true){
+            $scope.family.active = false;
+        }
+        
         $http({
             method: 'POST',
             url: window.path + 'search.php?action=family',
@@ -221,26 +263,3 @@ npcCommunityApp.controller('family-search',['$scope','$http','$compile', functio
         });
     }
 }]);
-
-function search($scope, $http, $sce) {
-    $scope.url = 'query.php'; // The url of our search
-
-    // The function that will be executed on button click (ng-keyup="search()")
-    $scope.search = function() {
-
-        // Create the http post request
-        // the data holds the keywords
-        // The request is a JSON request.
-        $http.post($scope.url, { "data" : $scope.keywords}).
-        success(function(data, status) {
-            $scope.status = status;
-            $scope.data = data;
-            $scope.result = $sce.trustAsHtml(data); // Show result from server in our <pre></pre> element
-        })
-        .
-        error(function(data, status) {
-            $scope.data = data || "Request failed";
-            $scope.status = status;         
-        });
-    };
-}

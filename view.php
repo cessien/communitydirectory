@@ -219,17 +219,27 @@ if ($_SESSION["current_step"] == "person") { ?>
             <div class="row section search">
                 <h2 class="col-sm-12">Search for your family.</h2>
                 <div class="input-group input-group-lg col-sm-12 col-md-8">
-                    <input type="text" class="search-query form-control" ng-model="keywords" ng-keyup="search()" placeholder="Search for families by last name">
+                    <input type="text" class="search-query form-control" ng-model="keywords" ng-click="family.active = false" ng-keyup="search()" placeholder="Search for families by last name">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">
-                            <span class=" glyphicon glyphicon-search"></span>
+                        <button class="btn btn-default" type="button" ng-keyup="search()" title="Search">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                        <button class="btn btn-default" type="button" ng-click="setFamily()" title="Add a new Family">
+                            <span class="glyphicon glyphicon-plus"></span>
                         </button>
                     </span>
                 </div>
-                <div class="col-sm-12 col-md-8 well">
+                <div class="col-sm-12 col-md-8 well" ng-show="family.active != true">
                     <ul class="results">
-                        <li class="row family-header" ng-repeat="family in list | filter: filterfn">
-                            <h2 class="col-sm-12">{{family[0].name}}'s Family</h2>
+                        <li class="row family-header first" ng-click="setFamily()">
+                            <h2 class="col-sm-12"><span class="glyphicon glyphicon-plus" style="font-size: 20px;"></span>&nbsp;&nbsp;{{keywords}}</h2>
+                            <ul class="col-sm-8">
+                                <li class="member"><a>Tap here to add a new family.</a></li>
+                            </ul>
+                            <h2 class="col-sm-4 info">&nbsp;</h2>
+                        </li>
+                        <li class="row family-header" data-id="{{family[0].uid}}" ng-repeat="family in list | filter: filterfn" ng-click="setFamily(family[0].uid)">
+                            <h2 class="col-sm-12"><span class="glyphicon glyphicon-home" style="font-size: 20px;"></span>&nbsp;&nbsp;{{family[0].name}}'s Family<a style="text-transform: capitalize; font-style: italic; font-size: 24px; float: right;">tap to select</a></h2>
                             <ul class="col-sm-8">
                                 <li class="member" ng-repeat="person in family">{{person.first_name}},&nbsp;</li>
                             </ul>
@@ -237,6 +247,32 @@ if ($_SESSION["current_step"] == "person") { ?>
                         </li>
                     </ul>
                 </div>
+            </div>
+        </div>
+    </article>
+    <article>
+        <div class="form-group">
+            <div class="row">
+                <h2 class="col-sm-12">Verify or update information for family: {{fam.name}}</h2>
+                <div class="col-sm-12 col-md-8">
+                    <div class="form-group input-group input-group-lg">
+                        <h3>Line 1</h3>
+                        <input type="text" ng-model="fam.address_line1" placeholder="Address Line 1" class="form-control">
+                        <h3>Line 2</h3>
+                        <input type="text" ng-model="fam.address_line2" placeholder="Address Line 2" class="form-control">
+                        <h3>City</h3>
+                        <input type="text" ng-model="fam.city" placeholder="City" class="form-control">
+                        <h3>Zip</h3>
+                        <input type="text" ng-model="fam.zip" placeholder="Zip" class="form-control">
+                        <h3>What's your relationship to this family?</h3>
+                        <select class="form-control" ng-modelng-focus="next(5)" blur="next(5,true)">
+                            <option value="parent">Parent / guardian</option>
+                            <option value="child">Child</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
             </div>
         </div>
     </article>

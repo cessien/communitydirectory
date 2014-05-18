@@ -2,6 +2,7 @@
 
 * {
     font-family: "Open Sans Condensed";
+    transition: all .25s;
 }
 
 .section {
@@ -92,10 +93,10 @@
     display: block;
     margin: 0;
     padding-left: 15px;
-    height: 30%;
+    /*height: 300px;*/
     width: 100%;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    /*overflow-x: hidden;
+    overflow-y: scroll;*/
 }
 
 .search .results .family-header > h2{
@@ -105,13 +106,27 @@
     margin: 0;
 }
 
-.search .results li > h2.info {
+.search .results .family-header {
+    border-bottom: 1px solid #aaa;
+    cursor: pointer;
+}
+
+.search .results .family-header:hover{
+    border: 1px solid #aaf;
     background-color: #eee;
+}
+
+.first {
+    color: #ada;
+}
+
+.search .results li > h2.info {
+    /*background-color: #eee;*/
     color: #777;
     font-family: "open sans condensed light";
     text-transform: uppercase;
     text-align: right;
-    padding: 10px 10px 10px 150px;
+    padding: 10px 25px 10px 10px;
     margin: 0;
 }
 

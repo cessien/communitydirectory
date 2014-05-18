@@ -3,7 +3,7 @@ if(!session_id()) {
     session_start();
 }
 
-$dir = plugin_dir_url(__FILE__);//"/wordpress/wp-content/plugins/npcdirectory/";
+$dir = "/wordpress/wp-content/plugins/npcdirectory/";
 global $current_user;
 $user_info = get_currentuserinfo();
 

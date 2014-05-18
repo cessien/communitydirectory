@@ -19,7 +19,7 @@ if ( $_GET["action"] == "init" ) { //Get all families to return to the client vi
     
     echo json_encode($results);
     
-} else if ( $_GET["action"] == "family" ){ //Search by last name for family records
+} else if ( $_GET["action"] == "family" && !isset($_GET["name"])){ //Search by last name for family records
     //Query the family table for familes
     $query = "SELECT uid FROM npcc_family WHERE SOUNDEX(name) = SOUNDEX('".$keyword."') OR name LIKE '%".$keyword."%' LIMIT 0, 30";
     
@@ -28,6 +28,14 @@ if ( $_GET["action"] == "init" ) { //Get all families to return to the client vi
     
     echo json_encode($results);
  
-} else { //Search all keywords loosely ?>
+} else if ( $_GET["action"] == "family" && isset($_GET["fam"])) { //Search for a specific family record 
+    $query = "SELECT * FROM npcc_family WHERE uid = ".$_GET["fam"]." LIMIT 0,1";
+    
+    //store and pass the results as JSON
+    $results = $wpdb->get_results($query,ARRAY_A);
+    
+    echo json_encode($results);
+    
+} else { ?>
 NOT DATA
 <?php } ?>
