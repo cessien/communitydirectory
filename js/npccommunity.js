@@ -44,7 +44,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
             config.address_line2 = $scope.person.address_line2;
             config.address_city = $scope.person.city;
             config.state = $scope.person.state;
-            config.zip = $scope.person.zip;
+            config.zipcode = $scope.person.zipcode;
             config.primary_email = $scope.person.primary_email;
             config.primary_phone = $scope.person.primary_phone;
             config.member = $scope.person.member;
@@ -200,15 +200,25 @@ npcCommunityApp.controller('family-search',['$scope','$http','$compile', functio
                 $scope.fam.city = $scope.family_record.city;
                 $scope.fam.state = "ma";//($scope.family_record.address_line1 != "")?$scope.family_record.address_line1:$scope.person.address_line1;
                 $scope.fam.zipcode = $scope.family_record.zipcode;
+                
+                $scope.fam.primary_phone = ($scope.family_record.primary_phone != "")?$scope.family_record.primary_phone:$scope.person.primary_phone;
+                $scope.fam.primary_email = ($scope.family_record.primary_email != "")?$scope.family_record.primary_email:$scope.person.primary_email;
+                
             });
             
             
         } else {
+            $scope.fam.action = "create";
+            $scope.fam.name = $scope.keywords;
+            
             $scope.fam.address_line1 = $scope.person.address_line1;
             $scope.fam.address_line2 = $scope.person.address_line2;
             $scope.fam.city = $scope.person.city;
             $scope.fam.state = "ma";
             $scope.fam.zipcode = $scope.person.zipcode;
+            
+            $scope.fam.primary_phone = $scope.person.primary_phone;
+            $scope.fam.primary_email = $scope.person.primary_email;
         }
     }
     

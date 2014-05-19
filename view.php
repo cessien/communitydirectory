@@ -107,7 +107,7 @@ if ($_SESSION["current_step"] == "person") { ?>
                         <div class="col-sm-8 col-md-6">
                             <div class="input-group input-group-lg">
                                 <h3>Zip</h3>
-                                <input type="text" ng-model="person.zip" placeholder="Zip" class="form-control" ng-focus="next(5)" ng-blur="next(5,true)">
+                                <input type="text" ng-model="person.zipcode" placeholder="Zip" class="form-control" ng-focus="next(5)" ng-blur="next(5,true)">
                             </div>
                         </div>
                         <div class="col-sm-4 col-md-6">
@@ -254,6 +254,34 @@ if ($_SESSION["current_step"] == "person") { ?>
         <div class="form-group">
             <div class="row">
                 <h2 class="col-sm-12">Verify or update information for family: {{fam.name}}</h2>
+            </div>
+            <div class="row" ng-show="fam.action == 'create'">
+                <div class="col-sm-12 col-md-8">
+                    <div class="form-group input-group input-group-lg">
+                        <h3>Family Surname</h3>
+                        <input type="text" ng-model="fam.name" placeholder="Family surname (Last name)" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group input-group input-group-lg">
+                        <h3>Primary email</h3>
+                        <input type="text" ng-model="fam.primary_email" placeholder="Primary email" class="form-control">
+                        <h3>Secondary email</h3>
+                        <input type="text" ng-model="fam.secondary_email" placeholder="Secondary email" class="form-control">  
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group input-group input-group-lg">
+                        <h3>Primary phone</h3>
+                        <input type="text" ng-model="fam.primary_phone" placeholder="Primary phone" class="form-control">
+                        <h3>Secondary phone</h3>
+                        <input type="text" ng-model="fam.secondary_phone" placeholder="Secondary phone" class="form-control">  
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-12 col-md-8">
                     <div class="form-group input-group input-group-lg">
                         <h3>Line 1</h3>
@@ -263,7 +291,7 @@ if ($_SESSION["current_step"] == "person") { ?>
                         <h3>City</h3>
                         <input type="text" ng-model="fam.city" placeholder="City" class="form-control">
                         <h3>Zip</h3>
-                        <input type="text" ng-model="fam.zip" placeholder="Zip" class="form-control">
+                        <input type="text" ng-model="fam.zipcode" placeholder="Zip" class="form-control">
                         <h3>What's your relationship to this family?</h3>
                         <select class="form-control" ng-modelng-focus="next(5)" blur="next(5,true)">
                             <option value="parent">Parent / guardian</option>
