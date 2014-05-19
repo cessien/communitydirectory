@@ -50,6 +50,17 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
             config.member = $scope.person.member;
         
         } else if ($scope.currentStep = "family") {
+            config.action = $scope.fam.action;
+            config.uid = $scope.fam.uid;
+            config.name = $scope.fam.name;
+            config.primary_email = $scope.fam.primary_email;
+            config.secondary_email = $scope.fam.secondary_email;
+            config.phone_number1 = $scope.fam.phone_number1;
+            config.phone_number2 = $scope.fam.phone_number2;
+            config.phone_number3 = $scope.fam.phone_number3;
+            config.address_line1 = $scope.fam.address_line1;
+            config.address_line2 = $scope.fam.address_line2;
+            config.city = $scope.fam.city;
         } else if ($sope.currentStep = "communities") {
         }
         
