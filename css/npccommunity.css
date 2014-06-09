@@ -97,7 +97,7 @@ ul.nav.secondary > li:hover {
     border-right: 5px solid #428bca;
 }
 
-#main-view > article, #main-view > div > article {
+#main-view > article, #main-view > div > article, div > article {
     background-color: #fff;
     border: 1px solid #d8d8d8;
     border-radius: 3px;
@@ -232,6 +232,52 @@ ul.nav.secondary > li:hover {
     padding: 10px;
     margin: 0;
 }
+
+.people-header {
+    margin-top: 20px;
+    height: 300px;
+    overflow: hidden;
+    border: 1px solid #d8d8d8;
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: #000;
+}
+
+.people-header .information {
+    text-transform: capitalize;
+    position: relative;
+    top: -50px;
+    height: 245px;
+    background-color: #f8f8f8;
+}
+
+.people-header .information > div {
+    padding: 10px;
+    height: 0px;
+    overflow: hidden;
+}
+
+.people-header:hover .information {
+    top: -150px;
+}
+
+.people-header:hover .information > div {
+    height: 70px;
+    padding: 10px;
+}
+
+.people-header:hover .information > h2{
+    color: #2a6496;
+    text-align: center;
+}
+
+.people-header .information > h2 {
+    background-color: #fff;
+    text-transform: uppercase;
+    padding: 10px;
+    margin: 0;
+}
+
 .search .results li > h2.info {
     /*background-color: #eee;*/
     color: #777;

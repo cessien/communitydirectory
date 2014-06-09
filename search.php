@@ -32,7 +32,7 @@ if ( $_GET["action"] == "init" ) { //Get all families to return to the client vi
     $query = "SELECT * FROM npcc_family WHERE uid = ".$_GET["fam"]." LIMIT 0,1";
     
     //store and pass the results as JSON
-    $results = $wpdb->get_results($query,ARRAY_A,);
+    $results = $wpdb->get_results($query,ARRAY_A);
     
     echo json_encode($results);
 
@@ -41,7 +41,7 @@ if ( $_GET["action"] == "init" ) { //Get all families to return to the client vi
     //$query = "SELECT * from npcc_person ORDER BY family_uid ASC";
     
     //store and pass the results as JSON
-    $results = $wpdb->get_results($query,ARRAY_A,);
+    $results = $wpdb->get_results($query,ARRAY_A);
     
     echo json_encode($results);
 } else {?>

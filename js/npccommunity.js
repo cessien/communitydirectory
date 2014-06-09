@@ -6,6 +6,16 @@ npcCommunityApp.run(function($rootScope) {
    });
 });
 
+/* Small script to live adjust the expanding and collapsing  of people */
+window.resizePeople = function(){
+    $('.people-header > img').each(function(){
+        var height = (300 - this.offsetHeight);
+        $(this).css('margin-bottom',height+'px');
+        //css('margin-bottom',300 - $(this).height() + 'px');
+    });
+}
+
+
 npcCommunityApp.controller('main-controller',['$scope','$http','$compile', function($scope,$http,$compile) {
     $scope.person = {}; 
     $scope.fam = {};
@@ -336,6 +346,9 @@ npcCommunityApp.controller('people-view',['$scope','$http','$compile', function(
         for (var i in data) {
             if(!$scope.list[""+data[i].family_uid])
                 $scope.list[""+data[i].family_uid] = [];
+            if(data[i].profile_picture == "")
+                data[i].profile_picture = "profile_default.png";
+            
             $scope.list[""+data[i].family_uid].push(data[i]);
         }
     });
@@ -353,3 +366,40 @@ npcCommunityApp.controller('people-view',['$scope','$http','$compile', function(
         });
     }
 }]);
+
+npcCommunityApp.directive(
+    "repeatComplete",
+    function( $rootScope ) {
+        var uuid = 0;
+
+        function compile( tElement, tAttributes ) {
+            var id = ++uuid;
+            tElement.attr( "repeat-complete-id", id );
+            tElement.removeAttr( "repeat-complete" );
+            var completeExpression = tAttributes.repeatComplete;
+            var parent = tElement.parent();
+            var parentScope = ( parent.scope() || $rootScope );
+            var unbindWatcher = parentScope.$watch(
+                function() {
+
+                    console.info( "Digest running." );
+                    var lastItem = parent.children( "*[ repeat-complete-id = '" + id + "' ]:last" );
+                    if ( ! lastItem.length ) {
+                        return;
+                    }
+                    var itemScope = lastItem.scope();
+                    if ( itemScope.$last ) {
+                        unbindWatcher();
+                        itemScope.$eval( completeExpression );
+                    }
+                }
+            );
+        }
+
+        return({
+            compile: compile,
+            priority: 1001,
+            restrict: "A"
+        });
+    }
+);
