@@ -11,6 +11,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
     $scope.fam = {};
     $scope.communities = [];
     $scope.currentStep = "person";
+    $scope.increment = 1;
     $scope.actions = {
         person: ['name','profile-picture','age-sex','location-info','contact-info'],
         family: [],
@@ -27,12 +28,18 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
         $scope.$broadcast('init',{compiler:$compile($('#main-view').contents())});
     });
     
+    
+    $scope.increment_count = function(){
+        $scope.increment++;
+        $scope.remaining = angular.element('#main-view>article').length - 1 - $scope.increment;
+    }
+    
         /* Submit all forms on the current view */
     $scope.submitAll = function(step){
         var config = {
         };
         
-        if ($scope.currentStep = "person") {
+        if ($scope.currentStep == "person") {
             //Submit all the fields for a person
             config.first_name = $scope.person.first_name;
             config.middle_name = $scope.person.middle_name;
@@ -49,7 +56,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
             config.primary_phone = $scope.person.primary_phone;
             config.member = $scope.person.member;
         
-        } else if ($scope.currentStep = "family") {
+        } else if ($scope.currentStep == "family") {
             config.action = $scope.fam.action;
             config.uid = $scope.fam.uid;
             config.name = $scope.fam.name;
@@ -61,7 +68,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
             config.address_line1 = $scope.fam.address_line1;
             config.address_line2 = $scope.fam.address_line2;
             config.city = $scope.fam.city;
-        } else if ($sope.currentStep = "communities") {
+        } else if ($scope.currentStep == "communities") {
         }
         
         $http({
@@ -96,7 +103,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
                 $scope.currentStep = "person";
             } else if ($scope.currentStep == "family") {
                 $scope.currentStep = "person";
-            } else if ($scope.currentStep = "communities") {
+            } else if ($scope.currentStep == "communities") {
                 $scope.currentStep = "family";
             } else if ($scope,currentStep == "end") {
                 $scope.currentStep = "communities";
@@ -118,6 +125,7 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
 
 npcCommunityApp.controller('view-controller',['$scope','$http','$compile', function($scope,$http,$comple) {
     $scope.$on('init',function(info,args){
+        $scope.remaining = angular.element('#main-view>article').length - 1;
         args.compiler($scope);
         $scope.index_count = 0; //The global index for the current wizard step
         /* Toggle all the elements to off besides the first item */
@@ -144,6 +152,15 @@ npcCommunityApp.controller('view-controller',['$scope','$http','$compile', funct
                 $scope.submit(step-1);
             }  
         }); 
+    }
+    
+    $scope.upload = function(){
+        var fd = new FormData();
+        fd.append('profile_picture',$('#profile_picture')[0].files[0]);
+        $http.post((window.path + 'image-upload.php'),fd,{headers: {'Content-Type': undefined}, transformRequest: angular.identity})
+        .success(function(data){
+            $scope.person.profile_picture = data.trim();
+        });
     }
     
     $scope.submit = function(index,type){
@@ -275,6 +292,58 @@ npcCommunityApp.controller('family-search',['$scope','$http','$compile', functio
         $http({
             method: 'POST',
             url: window.path + 'search.php?action=family',
+            data: {'keywords': $scope.keywords},
+            header: {
+                'Content-type': "application/json"
+            }
+        }).success(function(data){
+            $scope.fuzzy = data;
+        });
+    }
+}]);
+
+npcCommunityApp.controller('people-view',['$scope','$http','$compile', function($scope,$http,$compile) {
+    $scope.list = [];
+    $scope.fuzzy = [];
+    
+    $scope.filterfn = function(item){
+        if(!item){ //skip undefined item indexes
+            return false;
+        }
+        var bFuzzy = false;
+        for (var i in $scope.fuzzy) {
+            if(parseInt(item[0].uid)==parseInt($scope.fuzzy[i].uid)){
+                bFuzzy = true;
+                break;
+            }
+        }
+        if(!$scope.keywords || $scope.keywords == "" || (item[0].name).indexOf($scope.keywords) > -1 || bFuzzy) {
+            return true;
+        } 
+        
+        return false;
+    }
+    
+    $http({
+        method: 'GET',
+        url: window.path + 'search.php?action=init-people',
+        header: {
+            'Content-type': "application/json"
+        }
+    }).success(function(data){
+        //Separate all family records by family UID - O(n) complexity
+        var a = 0;
+        for (var i in data) {
+            if(!$scope.list[""+data[i].family_uid])
+                $scope.list[""+data[i].family_uid] = [];
+            $scope.list[""+data[i].family_uid].push(data[i]);
+        }
+    });
+        
+    $scope.search = function(){
+        $http({
+            method: 'POST',
+            url: window.path + 'search.php?action=people',
             data: {'keywords': $scope.keywords},
             header: {
                 'Content-type': "application/json"

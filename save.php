@@ -48,18 +48,18 @@
 			$_SESSION['person']['middle_name'] = $_POST['middle_name'];
 			$_SESSION['person']['last_name'] = $_POST['last_name'];
 
-//            $_SESSION['person']['birthday'] = $_POST['birthday'];
-//            $_SESSION['person']['sex'] = $_POST['sex'];
+            $_SESSION['person']['birthday'] = $_POST['birthday'];
+            $_SESSION['person']['sex'] = $_POST['sex'];
 //
-//            $_SESSION['person']['profile_picture'] = $_POST['profile_picture'];
+            $_SESSION['person']['profile_picture'] = $_POST['profile_picture'];
 //
-//            $_SESSION['person']['address_line1'] = $_POST['address_line1'];
-//            $_SESSION['person']['address_line2'] = $_POST['address_line2'];
-//            $_SESSION['person']['city'] = $_POST['city'];
-//            $_SESSION['person']['zipcode'] = $_POST['zipcode'];
-//            $_SESSION['person']['state'] = $_POST['state'];
+            $_SESSION['person']['address_line1'] = $_POST['address_line1'];
+            $_SESSION['person']['address_line2'] = $_POST['address_line2'];
+            $_SESSION['person']['city'] = $_POST['city'];
+            $_SESSION['person']['zipcode'] = $_POST['zipcode'];
+            $_SESSION['person']['state'] = $_POST['state'];
 //
-//            $_SESSION['person']['primary_email'] = $_POST['primary_email'];
+            $_SESSION['person']['primary_email'] = $_POST['primary_email'];
 			$_SESSION['person']['primary_phone'] = $_POST['primary_phone'];
             $_SESSION['person']['member'] = $_POST['member'];
 

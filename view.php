@@ -2,20 +2,27 @@
 if(!session_id()) {
     session_start();
 }
+
 if (isset($_GET["step"])) {
     $_SESSION["current_step"] = $_GET["step"];
 } else {
     $_SESSION["current_step"] = "person";
 }
 
+$dir = "/wordpress/wp-content/plugins/npcdirectory/";
+
 if ($_SESSION["current_step"] == "person") { ?>
 <article>
-    <form class="form-group" ng-submit="submit(1)">
+    <form class="form-group">
         <div class="row">
             <h1 class="col-sm-12 text-center">Who are you?</h1>
         </div>
+    </form>
+</article>
+<article ng-show="increment >= 1">
+    <form class="form-group" ng-submit="submit(1)">
         <div class="row section">
-            <h2 class="col-sm-12"><span class="glyphicon glyphicon-minus" style="font-size: 22px;"></span>&nbsp;Your name?<span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
+            <h2 class="col-sm-12">What's your name?<span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
             <div class="col-sm-2 col-sm-offset-3">
                 <div class="input-group input-group-lg">
                     <h3>First name</h3>
@@ -38,40 +45,40 @@ if ($_SESSION["current_step"] == "person") { ?>
     </form>
 </article>
 
-<article>
-    <form class="form-group" ng-mouseover="next(3)">
+<article ng-show="increment >= 2">
+    <form class="form-group" method="POST" enctype="multipart/form-data" id="profileupload">
         <div class="row section" data-provides="fileinput">
-            <h2 class="col-sm-12"><span class="glyphicon glyphicon-minus" style="font-size: 22px;"></span>&nbsp;Do you want to take or upload a profile picture now?<br><small>You can always upload one later, from home.</small><span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
+            <h2 class="col-sm-12">Do you want to take or upload a profile picture now?<br><small>You can always upload one later, from home.</small><span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
             <div class="row">
                 <div class="col-sm-12 col-md-6">
                     <h3>Upload a picture</h3>
                     <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 180px; height: 180px;"></div>
-                    <h3><em>Charles Essien</em></h3>
+                    <h3><em>{{person.first_name}}</em></h3>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="input-group input-group-lg" ng-focus="next(3)" blur="next(3,true)">
-                        <span class="btn btn-primary btn-lg btn-file">Select image<input type="file" ng-model="person.profile_picture" name="profile_picture"></span>
+                        <span class="btn btn-primary btn-lg btn-file">Select image<input type="file" name="profile_picture" id="profile_picture"></span>
                         <a href="#" class="btn btn-default btn-lg fileinput-exists" data-dismiss="fileinput">Remove</a>
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <button class="btn btn-default btn-lg" ng-click="next(3,true)" style="float:right;">Not now</button>
+                    <button class="btn btn-default btn-lg" ng-click="upload()" style="float:right;">Upload</button>
                 </div>
             </div>
         </div>
     </form>
 </article>
 
-<article>
+<article ng-show="increment >= 3">
     <form class="form-group">
         <div class="row section">
-            <h2 class="col-sm-12"><span class="glyphicon glyphicon-minus" style="font-size: 22px;"></span>&nbsp;How old are you?<span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
+            <h2 class="col-sm-12">How old are you?<span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
             <div class="col-sm-12 col-md-3">
                 <div class="input-group input-group-lg">
                     <h3>Birth Date</h3>
-                    <input class="form-control" type="text" name="birthday" placeholder="Date of birth" ng-focus="next(4)">
+                    <input class="form-control" type="date" name="birthday" ng-focus="next(4)">
                 </div>
             </div>
             <div class="col-sm-12 col-md-3">
@@ -79,11 +86,11 @@ if ($_SESSION["current_step"] == "person") { ?>
                 <div class="row input-group input-group-lg" blur="next(4,true)">
                     <div class="col-md-6">
                         <h3>Male</h3>
-                        <input class="form-control" type="radio" ng-model="person.sex" name="sex" value="male" ng-click="next(4,true)">
+                        <input class="form-control" type="radio" ng-model="person.sex" name="sex" value="1" ng-click="next(4,true)">
                     </div>
                     <div class="col-md-6">
                         <h3>Female</h3>
-                        <input class="form-control" type="radio" ng-model="person.sex" name="sex" value="female" ng-click="next(4,true)">
+                        <input class="form-control" type="radio" ng-model="person.sex" name="sex" value="0" ng-click="next(4,true)">
                     </div>
                 </div>
             </div>
@@ -91,10 +98,10 @@ if ($_SESSION["current_step"] == "person") { ?>
     </form>
 </article>
 
-<article>
+<article ng-show="increment >= 4">
     <form class="form-group">
         <div class="row section">
-            <h2 class="col-sm-12"><span class="glyphicon glyphicon-minus" style="font-size: 22px;"></span>&nbsp;Where do you live?<span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
+            <h2 class="col-sm-12">Where do you live?<span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
             <div class="col-sm-12 col-md-6">
                 <div class="form-group input-group input-group-lg">
                     <h3>Line 1</h3>
@@ -175,10 +182,10 @@ if ($_SESSION["current_step"] == "person") { ?>
     </form>
 </article>
 
-<article>
+<article ng-show="increment >= 5">
     <form class="form-group">
         <div class="row section">
-            <h2 class="col-sm-12"><span class="glyphicon glyphicon-minus" style="font-size: 22px;"></span>&nbsp;How can we contact you?<br><small>The reasons we may contact you may vary depending on whether you volunteer or not, and how active you are in the church. Your privacy matter to us and we would never share your contact information with anyone outside of NPC staff.</small><span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
+            <h2 class="col-sm-12">How can we contact you?<br><small>The reasons we may contact you may vary depending on whether you volunteer or not, and how active you are in the church. Your privacy matter to us and we would never share your contact information with anyone outside of NPC staff.</small><span class="glyphicon glyphicon-ok" style="font-size: 22px; float: right;"><p style="font-family: 'open sans condensed'; font-size: 30px; display: inline-block">Saved</p></span></h2>
 
             <div class="col-sm-12 col-md-4">
                 <div class="form-group input-group input-group-lg">
@@ -218,7 +225,7 @@ if ($_SESSION["current_step"] == "person") { ?>
         <div class="form-group">
             <div class="row section search">
                 <h2 class="col-sm-12">Search for your family.</h2>
-                <div class="input-group input-group-lg col-sm-12 col-md-8">
+                <div class="input-group input-group-lg col-sm-12">
                     <input type="text" class="search-query form-control" ng-model="keywords" ng-click="family.active = false" ng-keyup="search()" placeholder="Search for families by last name">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" ng-keyup="search()" title="Search">
@@ -229,23 +236,28 @@ if ($_SESSION["current_step"] == "person") { ?>
                         </button>
                     </span>
                 </div>
-                <div class="col-sm-12 col-md-8 well" ng-show="family.active != true">
-                    <ul class="results">
-                        <li class="row family-header first" ng-click="setFamily()">
-                            <h2 class="col-sm-12"><span class="glyphicon glyphicon-plus" style="font-size: 20px;"></span>&nbsp;&nbsp;{{keywords}}</h2>
-                            <ul class="col-sm-8">
-                                <li class="member"><a>Tap here to add a new family.</a></li>
-                            </ul>
-                            <h2 class="col-sm-4 info">&nbsp;</h2>
-                        </li>
-                        <li class="row family-header" data-id="{{family[0].uid}}" ng-repeat="family in list | filter: filterfn" ng-click="setFamily(family[0].uid)">
-                            <h2 class="col-sm-12"><span class="glyphicon glyphicon-home" style="font-size: 20px;"></span>&nbsp;&nbsp;{{family[0].name}}'s Family<a style="text-transform: capitalize; font-style: italic; font-size: 24px; float: right;">tap to select</a></h2>
-                            <ul class="col-sm-8">
-                                <li class="member" ng-repeat="person in family">{{person.first_name}},&nbsp;</li>
-                            </ul>
-                            <h2 class="col-sm-4 info">{{family[0].city}},&nbsp;{{family[0].state}}</h2>
-                        </li>
-                    </ul>
+                <div class="col-sm-12" ng-show="family.active != true">
+                    <div class="results row">
+                        <div class="col-md-4">
+                            <div class="family-header first text-center" ng-click="setFamily()">
+                                <h2><a class="col-md-12"><span class="glyphicon glyphicon-plus"></span> Tap here to add a new family.</a></h2>
+                                <h2 ng-show="keywords!=''">[ {{keywords}} ]</h2>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-4" data-id="{{family[0].uid}}" ng-repeat="family in list | filter: filterfn" ng-click="setFamily(family[0].uid)">
+                            <div class="family-header" >
+                                <img src="<?php echo $dir;?>img/default-profile.png" class="img-responsive" alt="Responsive image"/>
+                                <div class="information">
+                                    <h2>{{family[0].name}}</h2>
+                                    <div>
+                                        <h3><strong>{{family[0].city}},&nbsp;{{family[0].state}}</strong></h3>
+                                        <h3><span ng-repeat="person in family">{{person.first_name}}, </span></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -292,11 +304,6 @@ if ($_SESSION["current_step"] == "person") { ?>
                         <input type="text" ng-model="fam.city" placeholder="City" class="form-control">
                         <h3>Zip</h3>
                         <input type="text" ng-model="fam.zipcode" placeholder="Zip" class="form-control">
-                        <h3>What's your relationship to this family?</h3>
-                        <select class="form-control" ng-modelng-focus="next(5)" blur="next(5,true)">
-                            <option value="parent">Parent / guardian</option>
-                            <option value="child">Child</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -304,7 +311,27 @@ if ($_SESSION["current_step"] == "person") { ?>
             </div>
         </div>
     </article>
+    <article>
+        <form class="form-group" ng-submit="submit(1)">
+            <div class="row">
+                <h2>What's your relationship to this family?</h2>
+                <div class="form-group input-group input-group-lg">
+                    <select class="form-control" ng-modelng-focus="next(5)" blur="next(5,true)">
+                        <option value="parent">Parent / guardian</option>
+                        <option value="child">Child</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </article>
 </div>
 <?php } else if ($_SESSION['current_step'] == "communities") { ?>
+<article>
+    <form class="form-group" ng-submit="submit(1)">
+        <div class="row">
+            <h1 class="col-sm-12 text-center">Which NPC communities are you involved with?</h1>
+        </div>
+    </form>
+</article>
 <?php } else if ($_SESSION['current_step'] == "end") { ?>
 <?php } ?>

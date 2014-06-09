@@ -83,7 +83,7 @@ class PageTemplater {
 
 
             // Add your templates to this array.
-            $this->templates = array('register.php'=> 'NPC Community Sign Up','search.php'=> 'NPC Community Directory');
+            $this->templates = array('register.php'=> 'NPC Community Sign Up','search.php'=> 'NPC Community Directory','people.php'=> 'NPC Community Directory People');
 
     } 
 
