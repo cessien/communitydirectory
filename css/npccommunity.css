@@ -75,6 +75,7 @@ ul.side-nav.primary {
     padding: 20px 20px;
     margin-bottom: 20px;
 }
+
 ul.side-nav.primary > li.active {
     border-right: 3px solid #428bca;
 }
@@ -97,13 +98,47 @@ ul.nav.secondary > li:hover {
     border-right: 5px solid #428bca;
 }
 
-#main-view > article, #main-view > div > article, div > article {
+article, article.modal-content {
     background-color: #fff;
     border: 1px solid #d8d8d8;
     border-radius: 3px;
     border-bottom-width: 2px;
-    padding: 20px 70px;
+    padding: 20px 20px;
     margin-bottom: 20px;
+}
+
+.modal-header > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.modal-header > img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    position: relative;
+    left: -25px;
+}
+
+.modal-header {
+    text-transform: uppercase;
+}
+
+.modal-body {
+    padding: 10px 0;
+    font-size: 24px;
+}
+
+td.secondary, .secondary {
+    color: #aaa;
+}
+
+p.secondary {
+    font-style: italic;
+}
+
+.table > tbody > tr > td {
+    border: none;
 }
 
 .loader {
@@ -240,7 +275,13 @@ ul.nav.secondary > li:hover {
     border: 1px solid #d8d8d8;
     border-radius: 3px;
     cursor: pointer;
-    background-color: #000;
+    background-color: #fff;
+}
+
+.people-header > img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .people-header .information {
@@ -251,6 +292,18 @@ ul.nav.secondary > li:hover {
     background-color: #f8f8f8;
 }
 
+.people-header .information div.selected {
+    color: #0050ff;
+    text-align: center;
+    display: inline-block;
+    float: left;
+}
+
+.selected * {
+    margin: 0;
+    padding: 0;
+    margin-right: 10px;
+}
 .people-header .information > div {
     padding: 10px;
     height: 0px;
@@ -258,11 +311,11 @@ ul.nav.secondary > li:hover {
 }
 
 .people-header:hover .information {
-    top: -150px;
+    top: -180px;
 }
 
-.people-header:hover .information > div {
-    height: 70px;
+.people-header:hover .information > div.details {
+    height: 150px;
     padding: 10px;
 }
 
@@ -276,6 +329,14 @@ ul.nav.secondary > li:hover {
     text-transform: uppercase;
     padding: 10px;
     margin: 0;
+}
+
+.people-header .information > div > h4 {
+    padding: 0 10px;
+}
+
+.people-header .information > div > h4 > a {
+    float: right;
 }
 
 .search .results li > h2.info {

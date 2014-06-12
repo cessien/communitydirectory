@@ -78,7 +78,7 @@ if ($_SESSION["current_step"] == "person") { ?>
             <div class="col-sm-12 col-md-3">
                 <div class="input-group input-group-lg">
                     <h3>Birth Date</h3>
-                    <input class="form-control" type="date" name="birthday" ng-focus="next(4)">
+                    <input class="form-control" type="date" name="birthday" ng-model="birthday" ng-focus="next(4)">
                 </div>
             </div>
             <div class="col-sm-12 col-md-3">

@@ -29,7 +29,7 @@ if ( $_GET["action"] == "init" ) { //Get all families to return to the client vi
     echo json_encode($results);
  
 } else if ( $_GET["action"] == "family" && isset($_GET["fam"])) { //Search for a specific family record 
-    $query = "SELECT * FROM npcc_family WHERE uid = ".$_GET["fam"]." LIMIT 0,1";
+    $query = "SELECT *, LPAD(npcc_person.zipcode, 5, '0') FROM npcc_family WHERE uid = ".$_GET["fam"]." LIMIT 0,1";
     
     //store and pass the results as JSON
     $results = $wpdb->get_results($query,ARRAY_A);
@@ -37,7 +37,7 @@ if ( $_GET["action"] == "init" ) { //Get all families to return to the client vi
     echo json_encode($results);
 
 } else if ( $_GET["action"] == "init-people") {
-    $query = "SELECT npcc_person.*, npcc_family.name FROM npcc_person INNER JOIN npcc_family ON npcc_person.family_uid = npcc_family.uid ORDER BY npcc_person.family_uid ASC, npcc_family.uid LIMIT 0, 5000";
+    $query = "SELECT LPAD(npcc_person.zipcode, 5, '0'), npcc_person.*, npcc_family.name FROM npcc_person LEFT OUTER JOIN npcc_family ON npcc_person.family_uid = npcc_family.uid ORDER BY npcc_person.family_uid ASC, npcc_family.uid LIMIT 0, 5000";
     //$query = "SELECT * from npcc_person ORDER BY family_uid ASC";
     
     //store and pass the results as JSON

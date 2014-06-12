@@ -15,8 +15,19 @@ window.resizePeople = function(){
     });
 }
 
+setInterval(function(){
+    resizePeople();
+},2000);
 
 npcCommunityApp.controller('main-controller',['$scope','$http','$compile', function($scope,$http,$compile) {
+    $scope.resizePeople = function(){
+        $('.people-header > img').each(function(){
+            var height = (300 - this.offsetHeight);
+            $(this).css('margin-bottom',height+'px');
+            //css('margin-bottom',300 - $(this).height() + 'px');
+        });
+    }
+    
     $scope.person = {}; 
     $scope.fam = {};
     $scope.communities = [];
@@ -315,6 +326,9 @@ npcCommunityApp.controller('family-search',['$scope','$http','$compile', functio
 npcCommunityApp.controller('people-view',['$scope','$http','$compile', function($scope,$http,$compile) {
     $scope.list = [];
     $scope.fuzzy = [];
+    $scope.peopleList = [];
+    $scope.selection = {};
+    $scope.all_selected = false;
     
     $scope.filterfn = function(item){
         if(!item){ //skip undefined item indexes
@@ -334,6 +348,50 @@ npcCommunityApp.controller('people-view',['$scope','$http','$compile', function(
         return false;
     }
     
+    $scope.selectAll = function(){
+        if(!$scope.all_selected) { // mark all items as selected
+            for(var family in $scope.list) {
+                for(var people in $scope.list[family]){
+                    $scope.list[family][people].selected = true;
+                }
+            }
+            
+            $scope.all_selected = true;
+        } else { // mark all items as unselected
+            
+            for(var family in $scope.list) {
+                for(var people in $scope.list[family]){
+                    $scope.list[family][people].selected = false;
+                }
+            }
+            
+            $scope.all_selected = false;
+        }
+    }
+    
+    $scope.email = function() {
+        var mailString = "mailto:?subject=A message from npc&bcc=";
+        var emails = "";
+        
+        var count = 0;
+        for(var family in $scope.list) {
+            for(var people in $scope.list[family]){
+                if($scope.list[family][people].selected && $scope.list[family][people].primary_email != "") {
+                    var formattedEmail = encodeURIComponent($scope.list[family][people].first_name+" "+$scope.list[family][people].last_name)+"<"+$scope.list[family][people].primary_email+">";
+                    emails += (((count > 0)?", ":"")+formattedEmail);
+                    count++;
+                }
+            }
+        }
+        document.location.href = mailString + emails;
+        $scope.emailList = decodeURIComponent( emails );
+        $scope.showModal(null,"list-email");
+    }
+    
+    $scope.listNumbers = function() {
+        $scope.showModal(null,"list-numbers");
+    }
+    
     $http({
         method: 'GET',
         url: window.path + 'search.php?action=init-people',
@@ -346,12 +404,40 @@ npcCommunityApp.controller('people-view',['$scope','$http','$compile', function(
         for (var i in data) {
             if(!$scope.list[""+data[i].family_uid])
                 $scope.list[""+data[i].family_uid] = [];
+            
             if(data[i].profile_picture == "")
                 data[i].profile_picture = "profile_default.png";
             
+            if(data[i].primary_phone)
+                data[i].primary_phone = data[i].primary_phone.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+            
+            if(data[i].birthday != "") {
+                data[i].age = Math.abs((new Date(Date.now() - (new Date(data[i].birthday)).getTime())).getUTCFullYear() - 1970);
+                data[i].birthday = (new Date(data[i].birthday)).toDateString();
+            }
+            
             $scope.list[""+data[i].family_uid].push(data[i]);
+            $scope.peopleList[data[i].uid] = data[i];
         }
     });
+    
+    $scope.showModal = function(uid, context){
+        if(uid && uid != ""){
+            $scope.selection = $scope.peopleList[uid];
+            $scope.selection.header = $scope.selection.first_name + " " + ($scope.selection.middle_name != ""?($scope.selection.middle_name.substring(0,1) + ". "):" ") + $scope.selection.last_name;
+        }
+        
+        if(!context || context == "") {
+            $('#people-modal').modal();
+        } else if (context == "number") {
+            $scope.selection.header2 = $scope.selection.primary_phone;
+            $('#people-modal').modal();
+        } else if (context == "list-numbers") {
+            $('#numbers-modal').modal();
+        } else if (context == "list-email") {
+            $('#email-modal').modal();
+        }
+    }
         
     $scope.search = function(){
         $http({
@@ -363,43 +449,7 @@ npcCommunityApp.controller('people-view',['$scope','$http','$compile', function(
             }
         }).success(function(data){
             $scope.fuzzy = data;
+            resizePeople();
         });
     }
 }]);
-
-npcCommunityApp.directive(
-    "repeatComplete",
-    function( $rootScope ) {
-        var uuid = 0;
-
-        function compile( tElement, tAttributes ) {
-            var id = ++uuid;
-            tElement.attr( "repeat-complete-id", id );
-            tElement.removeAttr( "repeat-complete" );
-            var completeExpression = tAttributes.repeatComplete;
-            var parent = tElement.parent();
-            var parentScope = ( parent.scope() || $rootScope );
-            var unbindWatcher = parentScope.$watch(
-                function() {
-
-                    console.info( "Digest running." );
-                    var lastItem = parent.children( "*[ repeat-complete-id = '" + id + "' ]:last" );
-                    if ( ! lastItem.length ) {
-                        return;
-                    }
-                    var itemScope = lastItem.scope();
-                    if ( itemScope.$last ) {
-                        unbindWatcher();
-                        itemScope.$eval( completeExpression );
-                    }
-                }
-            );
-        }
-
-        return({
-            compile: compile,
-            priority: 1001,
-            restrict: "A"
-        });
-    }
-);
