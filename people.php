@@ -25,14 +25,21 @@ $user_info = get_currentuserinfo();
                                     </span>
                                 </div>
                             </div>
-                            <div class="row text-center">
-                                <div class="col-md-4"><a ng-click="selectAll()" href><h2><span class="glyphicon glyphicon-ok"></span> Select all</h2></a></div>
-                                <div class="col-md-4"><a ng-click="email()" href><h2><span class="glyphicon glyphicon-envelope"></span> Email selected</h2></a></div>
+                            <div class="row text-left actions">
+                                <div class="col-md-2"><a ng-click="selectAll()" href><h2><span class="glyphicon glyphicon-ok"></span> Select all</h2></a></div>
+                                <div class="col-md-3"><a ng-click="email()" href><h2><span class="glyphicon glyphicon-envelope"></span> Email selected</h2></a></div>
                                 <div class="col-md-4"><a ng-click="listNumbers()" href><h2><span class="glyphicon glyphicon-earphone"></span> Selected phone numbers</h2></a></div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-md-5 text-left actions">
+                                    <h2>Viewing ({{mode}}):</h2>
+                                    <a ng-click="mode='images'"><h2><span class="glyphicon glyphicon-th"></span> Images</h2></a>
+                                    <a ng-click="mode='list'"><h2><span class="glyphicon glyphicon-th-list"></span> List</h2></a>
+                                </div>
                             </div>
                             <div class="row section search">
                                 <div class="col-sm-12">
-                                    <div id="people" class="results row">
+                                    <div id="people" class="results row" ng-show="mode=='images'">
                                         <div class="col-md-4" ng-repeat="family in list | filter: filterfn">
                                             <div class="people-header" ng-repeat="person in family" ng-click="person.selected = (person.selected)?false:true">
                                                     <img ng-src="<?php echo $upload_dir;?>{{person.profile_picture}}" class="img-responsive" alt="Responsive image"/>
@@ -50,6 +57,13 @@ $user_info = get_currentuserinfo();
                                             </div>
                                         </div>
                                     </div>
+                                        <div id="people" class="results" ng-show="mode=='list'">
+                                            <div ng-repeat="family in list | filter: filterfn">
+                                                <div class="row" ng-repeat="person in family">
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
                                 </div>
                             </div>
                         </div>

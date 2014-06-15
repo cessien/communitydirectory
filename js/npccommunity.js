@@ -90,6 +90,8 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
             config.address_line2 = $scope.fam.address_line2;
             config.city = $scope.fam.city;
         } else if ($scope.currentStep == "communities") {
+            
+            config.communities;
         }
         
         $http({
@@ -291,7 +293,7 @@ npcCommunityApp.controller('family-search',['$scope','$http','$compile', functio
     
     $http({
         method: 'GET',
-        url: window.path + 'search.php?action=init',
+        url: window.path + 'search.php?action=init&step=family',
         header: {
             'Content-type': "application/json"
         }
@@ -323,12 +325,45 @@ npcCommunityApp.controller('family-search',['$scope','$http','$compile', functio
     }
 }]);
 
+npcCommunityApp.controller('community-search',['$scope','$http','$compile', function($scope,$http,$compile) {
+    $scope.list = [];
+    $scope.fuzzy = [];
+    
+    $http({
+        method: 'GET',
+        url: window.path + 'search.php?action=init&step=communities',
+        header: {
+            'Content-type': "application/json"
+        }
+    }).success(function(data){
+        $scope.list = data;
+    });
+        
+    $scope.search = function(){
+        if($scope.family.active == true){
+            $scope.family.active = false;
+        }
+        
+        $http({
+            method: 'POST',
+            url: window.path + 'search.php?action=family',
+            data: {'keywords': $scope.keywords},
+            header: {
+                'Content-type': "application/json"
+            }
+        }).success(function(data){
+            $scope.fuzzy = data;
+        });
+    }
+}]);
+
 npcCommunityApp.controller('people-view',['$scope','$http','$compile', function($scope,$http,$compile) {
     $scope.list = [];
     $scope.fuzzy = [];
     $scope.peopleList = [];
     $scope.selection = {};
     $scope.all_selected = false;
+    $scope.mode = 'images';
     
     $scope.filterfn = function(item){
         if(!item){ //skip undefined item indexes

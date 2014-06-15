@@ -59,7 +59,7 @@ if ($_SESSION["current_step"] == "person") { ?>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="input-group input-group-lg" ng-focus="next(3)" blur="next(3,true)">
-                        <span class="btn btn-primary btn-lg btn-file">Select image<input type="file" name="profile_picture" id="profile_picture"></span>
+                        <input type="file" name="profile_picture" id="profile_picture">
                         <a href="#" class="btn btn-default btn-lg fileinput-exists" data-dismiss="fileinput">Remove</a>
                     </div>
                 </div>
@@ -333,5 +333,29 @@ if ($_SESSION["current_step"] == "person") { ?>
         </div>
     </form>
 </article>
+<article ng-controller="community-search">
+        <div class="form-group">
+            <div class="row section search">
+                <h2 class="col-sm-12">Filter by keyword</h2>
+                <div class="input-group input-group-lg col-sm-12">
+                    <input type="text" class="search-query form-control" ng-model="keywords" ng-click="family.active = false" ng-keyup="search()" placeholder="Search for families by last name">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" ng-keyup="search()" title="Search">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+                <h2 class="col-sm-12">Select which communities you're involved</h2>
+                <div class="col-sm-12">
+                    <div class="results row" ng-repeat="community in list | filter: keywords" data-uid="community.uid">
+                        <div class="col-md-4"><h2>{{community.name}}</h2></div>
+                        <div class="col-md-4"><p class="secondary" style="font-size: 22px;">{{community.description}}</p></div>
+                        <div class="col-md-4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
 <?php } else if ($_SESSION['current_step'] == "end") { ?>
 <?php } ?>

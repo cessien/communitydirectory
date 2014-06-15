@@ -141,6 +141,12 @@ p.secondary {
     border: none;
 }
 
+.actions * {
+    display: inline-block;
+    padding-right: 10px;
+    cursor: pointer;
+}
+
 .loader {
     color: #fff;
     font-size: 18pt;
