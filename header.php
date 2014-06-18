@@ -9,7 +9,7 @@
         <link type="text/css" media="all" rel="stylesheet" href="<?php echo $dir;?>css/npccommunity.css">
     </head>
     <body ng-controller="main-controller">
-        <nav class="navbar navbar-default" role="navigation">
+        <nav class="navbar navbar-inverse" role="navigation">
             <div class="navbar-header">
               <a class="navbar-brand" href="#"><span>NPC |</span> Community Directory</a>
             </div>

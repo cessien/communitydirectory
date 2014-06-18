@@ -333,7 +333,8 @@ if ($_SESSION["current_step"] == "person") { ?>
         </div>
     </form>
 </article>
-<article ng-controller="community-search">
+<div ng-controller="community-search">
+<article>
         <div class="form-group">
             <div class="row section search">
                 <h2 class="col-sm-12">Filter by keyword</h2>
@@ -345,17 +346,50 @@ if ($_SESSION["current_step"] == "person") { ?>
                         </button>
                     </span>
                 </div>
-                <h2 class="col-sm-12">Select which communities you're involved</h2>
-                <div class="col-sm-12">
-                    <div class="results row" ng-repeat="community in list | filter: keywords" data-uid="community.uid">
-                        <div class="col-md-4"><h2>{{community.name}}</h2></div>
-                        <div class="col-md-4"><p class="secondary" style="font-size: 22px;">{{community.description}}</p></div>
-                        <div class="col-md-4">
+                <h2 class="col-sm-12">Select which communities you're involved with</h2>
+                <div class="col-sm-12" ng-repeat="community in list | filter: keywords" data-uid="community.uid">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3>
+                            <a>{{community.name}}</a><span style="float:right">Tap to select <span class="glyphicon glyphicon-chevron-down"></span></span>
+                          </h3>
+                        </div>
+                        <div class="panel-body">
+                            <h3 class="secondary">{{community.description}}</h3>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </article>
+    <article>
+        <div class="form-group">
+            <div class="row section search">
+                <h2 class="col-sm-12">How are you involved in?</h2>
+                <div class="input-group input-group-lg col-sm-12">
+                    <input type="text" class="search-query form-control" ng-model="keywords" ng-click="family.active = false" ng-keyup="search()" placeholder="Search for families by last name">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" ng-keyup="search()" title="Search">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+                <h2 class="col-sm-12">Select which communities you're involved with</h2>
+                <div class="col-sm-12" ng-repeat="community in list | filter: keywords" data-uid="community.uid">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3>
+                            <a>{{community.name}}</a><span style="float:right">Tap to select <span class="glyphicon glyphicon-chevron-down"></span></span>
+                          </h3>
+                        </div>
+                        <div class="panel-body">
+                            <h3 class="secondary">{{community.description}}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    </div>
 <?php } else if ($_SESSION['current_step'] == "end") { ?>
 <?php } ?>

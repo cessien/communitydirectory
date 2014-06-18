@@ -19,7 +19,7 @@ setInterval(function(){
     resizePeople();
 },2000);
 
-npcCommunityApp.controller('main-controller',['$scope','$http','$compile', function($scope,$http,$compile) {
+npcCommunityApp.controller('main-controller',['$scope','$http','$compile','$location', function($scope,$http,$compile,$location) {
     $scope.resizePeople = function(){
         $('.people-header > img').each(function(){
             var height = (300 - this.offsetHeight);
@@ -31,25 +31,14 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
     $scope.person = {}; 
     $scope.fam = {};
     $scope.communities = [];
-    $scope.currentStep = "person";
+    $scope.currentStep = getParameterByName('step')?getParameterByName('step'):"person";
     $scope.increment = 1;
     $scope.actions = {
         person: ['name','profile-picture','age-sex','location-info','contact-info'],
         family: [],
         community: []
     };
-    
-    /* load the first page */
-    $http({
-        method: 'Get',
-        url: window.path + 'view.php'
-    }).success(function(data){
-        $('#main-view').html(data);
-        $compile($('#main-view').contents());
-        $scope.$broadcast('init',{compiler:$compile($('#main-view').contents())});
-    });
-    
-    
+
     $scope.increment_count = function(){
         $scope.increment++;
         $scope.remaining = angular.element('#main-view>article').length - 1 - $scope.increment;
@@ -143,7 +132,10 @@ npcCommunityApp.controller('main-controller',['$scope','$http','$compile', funct
             $('#main-view').html(data);
             $scope.$broadcast('init',{compiler:$compile($('#main-view').contents())});
         });
-    }    
+    }
+    
+    /* load the first page */
+    $scope.paginate($scope.currentStep);
 }]);
 
 npcCommunityApp.controller('view-controller',['$scope','$http','$compile', function($scope,$http,$comple) {
@@ -164,7 +156,7 @@ npcCommunityApp.controller('view-controller',['$scope','$http','$compile', funct
         $scope.index_count = (step)?step-1:Math.min($scope.index_count + 1,$(".container > div#main-view > article").size());
         
         var next_element = $(".container > div#main-view > article")[$scope.index_count];
-        $(next_element).fadeIn(1000,function(){
+        $(next_element).fadeIn(1000,function() {
             if(scroll) {
                 //$('body,html').animate({scrollTop: $(next_element).offset().top}, 500);
                 
@@ -191,7 +183,7 @@ npcCommunityApp.controller('view-controller',['$scope','$http','$compile', funct
         var config = {
         };
         
-        if (type=="person"){
+        if (type=="person") {
             switch(index - 1) {
                     case 0:
                         config.first_name = $scope.person.first_name;
@@ -488,3 +480,119 @@ npcCommunityApp.controller('people-view',['$scope','$http','$compile', function(
         });
     }
 }]);
+
+npcCommunityApp.controller('community-view',['$scope','$http','$compile', function($scope,$http,$compile) {
+    $scope.list = [];
+    $scope.fuzzy = [];
+    $scope.peopleList = [];
+    $scope.selection = {};
+    $scope.all_selected = false;
+    $scope.mode = 'images';
+    
+    $scope.filterfn = function(item){
+        if(!item){ //skip undefined item indexes
+            return false;
+        }
+        var bFuzzy = false;
+        for (var i in $scope.fuzzy) {
+            if(parseInt(item[0].uid)==parseInt($scope.fuzzy[i].uid)){
+                bFuzzy = true;
+                break;
+            }
+        }
+        if(!$scope.keywords || $scope.keywords == "" || (item[0].name).indexOf($scope.keywords) > -1 || bFuzzy) {
+            return true;
+        } 
+        
+        return false;
+    }
+    
+    $scope.selectAll = function(){
+        if(!$scope.all_selected) { // mark all items as selected
+            for(var family in $scope.list) {
+                for(var people in $scope.list[family]){
+                    $scope.list[family][people].selected = true;
+                }
+            }
+            
+            $scope.all_selected = true;
+        } else { // mark all items as unselected
+            
+            for(var family in $scope.list) {
+                for(var people in $scope.list[family]){
+                    $scope.list[family][people].selected = false;
+                }
+            }
+            
+            $scope.all_selected = false;
+        }
+    }
+    
+    $scope.email = function() {
+        var mailString = "mailto:?subject=A message from npc&bcc=";
+        var emails = "";
+        
+        var count = 0;
+        for(var family in $scope.list) {
+            for(var people in $scope.list[family]){
+                if($scope.list[family][people].selected && $scope.list[family][people].primary_email != "") {
+                    var formattedEmail = encodeURIComponent($scope.list[family][people].first_name+" "+$scope.list[family][people].last_name)+"<"+$scope.list[family][people].primary_email+">";
+                    emails += (((count > 0)?", ":"")+formattedEmail);
+                    count++;
+                }
+            }
+        }
+        document.location.href = mailString + emails;
+        $scope.emailList = decodeURIComponent( emails );
+        $scope.showModal(null,"list-email");
+    }
+    
+    $scope.listNumbers = function() {
+        $scope.showModal(null,"list-numbers");
+    }
+    
+    $http({
+        method: 'GET',
+        url: window.path + 'search.php?action=init-communities',
+        header: {
+            'Content-type': "application/json"
+        }
+    }).success(function(data){
+        $scope.list = data;
+    });
+    
+    $scope.showModal = function(uid, context){
+        if(uid && uid != ""){
+            $scope.selection = $scope.peopleList[uid];
+            $scope.selection.header = $scope.name
+        }
+        
+        if(!context || context == "") {
+            $('#people-modal').modal();
+        } else if (context == "list-numbers") {
+            $('#numbers-modal').modal();
+        } else if (context == "list-email") {
+            $('#email-modal').modal();
+        }
+    }
+        
+    $scope.search = function(){
+        $http({
+            method: 'POST',
+            url: window.path + 'search.php?action=communities',
+            data: {'keywords': $scope.keywords},
+            header: {
+                'Content-type': "application/json"
+            }
+        }).success(function(data){
+            $scope.fuzzy = data;
+        });
+    }
+}]);
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}

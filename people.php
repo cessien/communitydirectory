@@ -17,7 +17,7 @@ $user_info = get_currentuserinfo();
                             <div class="row section search">
                                 <h2 class="col-sm-12">People in NPC</h2>
                                 <div class="input-group input-group-lg col-sm-12">
-                                    <input type="text" class="search-query form-control" ng-model="keywords" ng-click="family.active = false" ng-keyup="search()" placeholder="Search for families by last name">
+                                    <input type="text" class="search-query form-control" ng-model="keywords" ng-keyup="search()" placeholder="Search for people">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" type="button" ng-keyup="search()" title="Search">
                                             <span class="glyphicon glyphicon-search"></span>

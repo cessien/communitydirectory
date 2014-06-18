@@ -45,6 +45,14 @@ if ( $_GET["action"] == "init" && $_GET["step"] == "family") { //Get all familie
     
     echo json_encode($results);
 
+} else if ( $_GET["action"] == "init-communities" && isset($_GET["fam"])) { //Search for a specific family record 
+    $query = "SELECT *,COUNT * FROM (npcc_community OUTER JOIN npcc_community_role ON npcc_community.uid=npcc_community_role.community_uid) GROUP BY npcc_community.name, npcc_community_role.role";
+    
+    //store and pass the results as JSON
+    $results = $wpdb->get_results($query,ARRAY_A);
+    
+    echo json_encode($results);
+
 } else if ( $_GET["action"] == "init-people") {
     $query = "SELECT LPAD(npcc_person.zipcode, 5, '0'), npcc_person.*, npcc_family.name FROM npcc_person LEFT OUTER JOIN npcc_family ON npcc_person.family_uid = npcc_family.uid ORDER BY npcc_person.family_uid ASC, npcc_family.uid LIMIT 0, 5000";
     //$query = "SELECT * from npcc_person ORDER BY family_uid ASC";
