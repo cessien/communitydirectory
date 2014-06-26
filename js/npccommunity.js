@@ -481,6 +481,109 @@ npcCommunityApp.controller('people-view',['$scope','$http','$compile', function(
     }
 }]);
 
+npcCommunityApp.controller('family-view',['$scope','$http','$compile', function($scope,$http,$compile){
+    $scope.list = [];
+    $scope.fuzzy = [];
+    $scope.peopleList = [];
+    $scope.selection = {};
+    $scope.all_selected = false;
+    $scope.mode = 'images';
+
+    $scope.filterfn = function(item){
+        if(!item){ //skip undefined item indexes
+            return false;
+        }
+        var bFuzzy = false;
+        for (var i in $scope.fuzzy) {
+            if(parseInt(item[0].uid)==parseInt($scope.fuzzy[i].uid)){
+                bFuzzy = true;
+                break;
+            }
+        }
+        if(!$scope.keywords || $scope.keywords == "" || (item[0].name).indexOf($scope.keywords) > -1 || bFuzzy) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /** EDIT STUFF AGAIN **/
+    $scope.selectAll = function(){
+        if(!$scope.all_selected) { // mark all items as selected
+            for(var family in $scope.list) {
+                $scope.list[family].selected = true;
+            }
+
+            $scope.all_selected = true;
+        } else { // mark all items as unselected
+            for(var family in $scope.list) {
+                $scope.list[family].selected = false;
+            }
+
+            $scope.all_selected = false;
+        }
+    }
+
+    $scope.email = function() {
+        var mailString = "mailto:?subject=A message from npc&bcc=";
+        var emails = "";
+
+        var count = 0;
+        for(var family in $scope.list) {
+            if($scope.list[family].selected && $scope.list[family].primary_email != "") {
+                var formattedEmail = encodeURIComponent($scope.list[family].name)+"<"+$scope.list[family].primary_email+">";
+                emails += (((count > 0)?", ":"")+formattedEmail);
+                count++;
+            }
+        }
+        document.location.href = mailString + emails;
+        $scope.emailList = decodeURIComponent( emails );
+        $scope.showModal(null,"list-email");
+    }
+
+    $scope.listNumbers = function() {
+        $scope.showModal(null,"list-numbers");
+    }
+
+    $scope.showModal = function(uid, context){
+        if(uid && uid != ""){
+            $scope.selection = $scope.list[uid];
+            $scope.selection.header = $scope.selection.name;
+        }
+
+        if(!context || context == "") {
+            $('#family-modal').modal();
+        } else if (context == "list-numbers") {
+            $('#numbers-modal').modal();
+        } else if (context == "list-email") {
+            $('#email-modal').modal();
+        }
+    }
+
+    $http({
+        method: 'GET',
+        url: window.path + 'search.php?action=init-family',
+        header: {
+            'Content-type': "application/json"
+        }
+    }).success(function(data){
+        $scope.list = data;
+    });
+
+    $scope.search = function(){
+        $http({
+            method: 'POST',
+            url: window.path + 'search.php?action=family',
+            data: {'keywords': $scope.keywords},
+            header: {
+                'Content-type': "application/json"
+            }
+        }).success(function(data){
+            $scope.fuzzy = data;
+        });
+    }
+}]);
+
 npcCommunityApp.controller('community-view',['$scope','$http','$compile', function($scope,$http,$compile) {
     $scope.list = {};
     $scope.communityList = {};

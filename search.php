@@ -38,7 +38,7 @@ if ( $_GET["action"] == "init" && $_GET["step"] == "family") { //Get all familie
     echo json_encode($results);
  
 } else if ( $_GET["action"] == "family" && isset($_GET["fam"])) { //Search for a specific family record 
-    $query = "SELECT *, LPAD(npcc_person.zipcode, 5, '0') FROM npcc_family WHERE uid = ".$_GET["fam"]." LIMIT 0,1";
+    $query = "SELECT *, LPAD(npcc_family.zipcode, 5, '0') FROM npcc_family WHERE uid = ".$_GET["fam"]." LIMIT 0,1";
     
     //store and pass the results as JSON
     $results = $wpdb->get_results($query,ARRAY_A);
@@ -59,8 +59,39 @@ if ( $_GET["action"] == "init" && $_GET["step"] == "family") { //Get all familie
     
     //store and pass the results as JSON
     $results = $wpdb->get_results($query,ARRAY_A);
-    
+
     echo json_encode($results);
+} else if ( $_GET["action"] == "init-family" ) {
+    //Query the family table for familes
+    $query = "SELECT npcc_person.first_name, npcc_family.* FROM npcc_person INNER JOIN npcc_family ON npcc_person.family_uid = npcc_family.uid ORDER BY npcc_family.name ASC, npcc_family.uid LIMIT 0, 500";
+
+    //store and pass the results as JSON
+    $results = $wpdb->get_results($query,ARRAY_A);
+    $familiesArray = array();
+
+    foreach($results as $row){
+        $uid = $row['uid'];
+        if(!$familiesArray[$uid]){
+            $familiesArray[$uid]['uid'] = $uid;
+            $familiesArray[$uid]['name'] = $row['name'];
+            $familiesArray[$uid]['primary_email'] = $row['primary_email'];
+            $familiesArray[$uid]['secondary_email'] = $row['secondary_email'];
+            $familiesArray[$uid]['primary_phone'] = $row['primary_phone'];
+            $familiesArray[$uid]['secondary_phone'] = $row['secondary_phone'];
+            $familiesArray[$uid]['address_line1'] = $row['address_line1'];
+            $familiesArray[$uid]['address_line2'] = $row['address_line2'];
+            $familiesArray[$uid]['city'] = $row['city'];
+            $familiesArray[$uid]['state'] = $row['state'];
+            $familiesArray[$uid]['zipcode'] = $row['zipcode'];
+            $familiesArray[$uid]['members'] = array($row['first_name']);
+        } else {
+            array_push($familiesArray[$uid]['members'], $row['first_name']);
+        }
+    }
+
+    echo json_encode($familiesArray);
+
+//    echo json_encode($results);
 } else {?>
 NOT DATA
 <?php }?>
