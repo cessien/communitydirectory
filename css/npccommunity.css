@@ -257,6 +257,13 @@ p.secondary {
     padding: 10px;
 }
 
+.family-header .information div.selected {
+    color: #0050ff;
+    text-align: center;
+    display: inline-block;
+    float: left;
+}
+
 .family-header:hover .information {
     top: -180px;
 }
