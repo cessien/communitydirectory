@@ -585,7 +585,8 @@ npcCommunityApp.controller('family-view',['$scope','$http','$compile', function(
 }]);
 
 npcCommunityApp.controller('community-view',['$scope','$http','$compile', function($scope,$http,$compile) {
-    $scope.list = [];
+    $scope.list = {};
+    $scope.communityList = {};
     $scope.fuzzy = [];
     $scope.peopleList = [];
     $scope.selection = {};
@@ -608,6 +609,21 @@ npcCommunityApp.controller('community-view',['$scope','$http','$compile', functi
         } 
         
         return false;
+    }
+    
+    $scope.uniqueFilterList = [];
+    
+    $scope.uniqueFilter = function(item){
+        if(!item){ //skip undefined item indexes
+            return false;
+        }
+        
+        return true;
+    }
+    
+    $scope.clearFilter = function(key){
+        //console.log(key);
+        if ( key ) $scope.uniqueFilterList = [];
     }
     
     $scope.selectAll = function(){
@@ -661,7 +677,23 @@ npcCommunityApp.controller('community-view',['$scope','$http','$compile', functi
             'Content-type': "application/json"
         }
     }).success(function(data){
-        $scope.list = data;
+        //Associative to group by community > role type 
+        
+        for (var row in data) {
+            if (data[row].name == null) continue;
+            
+            if (!$scope.list[data[row].name]){
+                $scope.list[data[row].name] = {};
+                $scope.communityList[data[row].name] = [];
+            }
+            
+            if (!$scope.list[data[row].name][data[row].role])
+                $scope.list[data[row].name][data[row].role] = [];
+            
+            $scope.list[data[row].name][data[row].role].push(data[row]);
+            $scope.communityList[data[row].name][data[row].person_uid] = data[row];
+        }
+        //$scope.list = data;
     });
     
     $scope.showModal = function(uid, context){
